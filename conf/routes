@@ -1,0 +1,30 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                           controllers.HomeController.index
+
+# Routes WhereAmI
+#
+# Routes for User
+GET     /api/users              controllers.UserController.getUsers
+POST    /api/users              controllers.UserController.createNewUser
+PUT     /api/users              controllers.UserController.updateUser
+GET     /api/users/:id          controllers.UserController.getUser(id: Long)
+DELETE  /api/users/:id          controllers.UserController.deleteUser(id: Long)
+POST    /api/users/check        controllers.UserController.userExists
+
+#Routes for Session
+GET     /api/sessions           controllers.SessionController.getSessions(q: String ?= null)
+GET     /api/sessions/:id       controllers.SessionController.getSession(id: Long)
+POST    /api/sessions           controllers.SessionController.createNewSession
+
+#Routes for Location
+GET     /api/locations           controllers.LocationController.getLocations
+GET     /api/locations/:id       controllers.LocationController.getLocation(id: Long)
+POST    /api/locations           controllers.LocationController.createNewLocation
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

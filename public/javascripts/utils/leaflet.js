@@ -20,9 +20,7 @@ function createLeaflet() {
   let userPopup = L.popup();
   let userMarker;
   function onMapClick(e) {
-    console.log(clicked);
     if(clicked===false){
-      console.log(clicked);
       coordinates = e.latlng;
       if(userMarker!=undefined){
         mymap.removeLayer(userMarker);

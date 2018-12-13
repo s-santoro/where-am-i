@@ -6,8 +6,6 @@ function showScore(input) {
         '<h4 class="text-center mt-3">Distance: '+ Math.round(input.distance) +'km</h4>' +
         '</div>';
     $('#app').prepend(score);
-    //score.insertBefore($('#leafletContainer'));
-    console.log(input.imagepos.latitude,input.imagepos.longitude);
     createImageMarker(input);
 }
 
@@ -18,7 +16,6 @@ function postSession(user, imgKey, score){
         "score": Math.round(score),
         "timestamp": createISODate()
     }
-    console.log(session);
     fetch('http://localhost:9000/api/sessions',{
         method: 'post',
         headers: {
@@ -41,5 +38,22 @@ function createISODate(){
         month = '0' + month;
     }
     return year+'-' + month + '-'+dt;
+}
+
+function calcAverageScore(dataInput, userID){
+    let scoreArray = [];
+    let sum = 0;
+    let avg;
+    dataInput.forEach((element) => {
+        if(element.user_fk == userID){
+            scoreArray.push(element.score);
+        }
+    });
+    scoreArray.forEach((element) => {
+        sum += element;
+    });
+    avg = sum/scoreArray.length;
+    console.log(avg);
+    return avg;
 }
 

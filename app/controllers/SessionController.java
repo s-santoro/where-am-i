@@ -41,7 +41,6 @@ public class SessionController extends Controller {
                     Thread.currentThread().getStackTrace()[1]);
                 return status(404, "Error: Resource not found!");
             }
-            response().setHeader("Access-Control-Allow-Origin", "*"); //Übergangslösung?
             return ok(Json.toJson(sessionStream.collect(Collectors.toList())));
         }, ec.current());
     }

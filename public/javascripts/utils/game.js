@@ -1,5 +1,6 @@
 const mapillaryId = 'UlhwcmNzcEs2TFpQaEQ1TEFRaWtaZzo1MDk0NjU0OGY5YjNjYzA2';
 let clicked = false;
+let userID = 2;
 
 function game(context) {
 //Structure
@@ -23,7 +24,7 @@ function game(context) {
         .then((distance) => {
           clicked=true;
           showScore(distance);
-          postSession(1, imgKey, distance.distance);
+          postSession(userID, imgKey, distance.distance); //Todo: Implement USER
         });
 
     }else{

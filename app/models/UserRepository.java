@@ -42,6 +42,11 @@ public class UserRepository {
         return supplyAsync(() -> wrap(em -> find(em, id)));
     }
 
+    public CompletionStage<User> findByName(String name) {
+
+        return supplyAsync(() -> wrap(em -> find(em, name)));
+    }
+
     public CompletionStage<User> update(User user) {
 
         return supplyAsync(() -> wrap(em -> update(em, user)));
@@ -90,5 +95,11 @@ public class UserRepository {
 
     private User find(EntityManager em, Long id) {
         return em.find(User.class, id);
+    }
+
+    private User find(EntityManager em, String name) {
+        String query = "SELECT u FROM users u WHERE username=\'" + name + "\'";
+        List<User> users = em.createQuery(query, User.class).getResultList();
+        return users.get(0) != null ? users.get(0) : null;
     }
 }

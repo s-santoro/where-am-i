@@ -11,9 +11,9 @@ GET     /                           controllers.HomeController.index
 GET     /api/users              controllers.UserController.getUsers
 POST    /api/users              controllers.UserController.createNewUser
 PUT     /api/users              controllers.UserController.updateUser
+GET     /api/users/check        controllers.UserController.userExists
 GET     /api/users/:id          controllers.UserController.getUser(id: Long)
 DELETE  /api/users/:id          controllers.UserController.deleteUser(id: Long)
-POST    /api/users/check        controllers.UserController.userExists
 
 #Routes for Session
 GET     /api/sessions           controllers.SessionController.getSessions(q: String ?= null)

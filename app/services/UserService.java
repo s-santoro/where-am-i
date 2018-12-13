@@ -48,8 +48,8 @@ public interface UserService {
 
     /**
      * Check if user-credentials from log-in form equals existing user in database.
-     * @param userToCheck
+     * @param credentials only contains username and password
      * @return {@code true} if validation successful, otherwise {@code false}
      */
-    CompletionStage<Boolean> check(User userToCheck);
+    CompletionStage<Boolean> check(String[] credentials);
 }

@@ -26,6 +26,7 @@ function submitForm() {
             if(validateUserLogIn() && validatePassLogIn()) {
                 let username = userLogIn.val();
                 let password = passLogIn.val();
+                emptyLogInput();
                 let basic = "Basic " + username + ":" + password;
                 fetch('http://localhost:9000/api/users/check', {
                     method: "GET",
@@ -34,8 +35,25 @@ function submitForm() {
                         "Authorization": basic
                     }
                 }).then(response => {
-                    console.log(response.status);
-                    return response.status;
+                    return response.status
+                }).then((status) => {
+                    console.log(typeof status);
+                    switch (status) {
+                        case 200:
+                            // TODO: set cookie
+                            console.log(status);
+                            break;
+                        case 403:
+                            console.log(status);
+                            // TODO: check if user already exists
+                            // TODO: add user
+                            submit.parent().prepend("<h4 id='logInError' class='mr-4'>Invalid user-credentials!</h4>");
+                            setTimeout(function () {
+                                $("#logInError").remove();
+                            }, 2000);
+
+                            break;
+                    }
                 }).catch(err => console.log(err));
             }
             break;
@@ -43,7 +61,12 @@ function submitForm() {
             if( validatePassConfSignUp() &&
                 validatePassSignUp() &&
                 validateUserSignUp()) {
-
+                console.log("sign up");
+                emptySignUpInput();
+                submit.parent().prepend("<h4 id='signUpSuccess' class='mr-4'>Account created, please log in!</h4>");
+                setTimeout(function () {
+                    $("#signUpSuccess").remove();
+                }, 2000);
             }
             break;
     }
@@ -59,7 +82,7 @@ function validateUserSignUp() {
     $('#invalidUSU').remove();
     $('#shortUSU').remove();
     userSignUp.removeClass("is-invalid");
-    if (input.length > 0 && input.length < 3) {
+    if (input.length > 0 && input.length <= 3) {
         userSignUp.parent().append(nameShortDiv);
         userSignUp.addClass("is-invalid");
     }
@@ -81,7 +104,7 @@ function validatePassSignUp() {
     $('#invalidPSU').remove();
     $('#shortPSU').remove();
     passSignUp.removeClass("is-invalid");
-    if (input.length > 0 && input.length < 3) {
+    if (input.length > 0 && input.length <= 3) {
         passSignUp.parent().append(nameShortDiv);
         passSignUp.addClass("is-invalid");
     }
@@ -134,4 +157,20 @@ function validatePassLogIn() {
         passLogIn.addClass("is-invalid");
     }
     return (regex.test(input));
+}
+
+function emptySignUpInput() {
+    userSignUp.val("");
+    userSignUp.attr("placeholder", "Username");
+    passSignUp.val("");
+    passSignUp.attr("placeholder", "Password");
+    passConfSignUp.val("");
+    passConfSignUp.attr("placeholder", "Confirm Password");
+}
+
+function emptyLogInput() {
+    userLogIn.val("");
+    userLogIn.attr("placeholder", "Username");
+    passLogIn.val("");
+    passLogIn.attr("placeholder", "Password");
 }

@@ -27,7 +27,6 @@ function getDistance(imageKey, userPos) {
       latitude: image.geometry.coordinates[1],
       longitude: image.geometry.coordinates[0]
     };
-    console.log(image.geometry.coordinates[0], image.geometry.coordinates[1]);
   })
   .then(() => {
     let distanceInfo = {

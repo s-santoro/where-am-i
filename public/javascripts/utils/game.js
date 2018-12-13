@@ -23,8 +23,8 @@ function game(context) {
         .then((distance) => {
           clicked=true;
           showScore(distance);
+          postSession(1, imgKey, distance.distance);
         });
-      console.log(imgKey, coordinates);
 
     }else{
       alert("Please set your tip");

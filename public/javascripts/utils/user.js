@@ -4,15 +4,24 @@
 //let userID = 1;
 
 function user(context) {
-    //User
+    createUserInfo(userID);
+
+}
+
+function createAverageScore(dataInput, userID){
+    let avgScore = '<h4 class="text-center mt-3 mb-3">Average Score: '+ calcAverageScore(dataInput, userID) +' km</h4>';
+    $('#app').append(avgScore);
+}
+
+function createUserInfo(userID){
     fetch('http://localhost:9000/api/users/' + userID)
         .then(function(response) {
             return response.json();
         })
         .then(function(myJson) {
             let user =  '<div id="scoreDiv" class="container">' +
-                        '<h4 class="text-center mt-3 mb-3">User: '+ myJson.username +'</h4>' +
-                        '</div>'; //Todo: Implement USER
+                '<h4 class="text-center mt-3 mb-3">User: '+ myJson.username +'</h4>' +
+                '</div>'; //Todo: Implement USER
             $('#app').prepend(user);
         });
     //Average Score and Chart
@@ -26,12 +35,6 @@ function user(context) {
             //Chart
             createChart(preprocessData(myJson, userID)); //Todo: Implement USER
         });
-}
-
-function createAverageScore(dataInput, userID){
-    let avgScore = '<h4 class="text-center mt-3 mb-3">Average Score: '+ calcAverageScore(dataInput, userID) +' km</h4>';
-    $('#app').append(avgScore);
-
 }
 
 

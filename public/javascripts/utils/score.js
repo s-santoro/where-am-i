@@ -52,7 +52,7 @@ function calcAverageScore(dataInput, userID){
     scoreArray.forEach((element) => {
         sum += element;
     });
-    avg = sum/scoreArray.length;
+    avg = Math.round(sum/scoreArray.length);
     console.log(avg);
     return avg;
 }

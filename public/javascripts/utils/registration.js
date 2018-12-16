@@ -28,7 +28,7 @@ function submitForm() {
                 let password = passLogIn.val();
                 emptyLogInput();
                 let basic = "Basic " + username + ":" + password;
-                fetch('http://localhost:9000/api/users/check', {
+                fetch('http://localhost:9000/api/users/validate', {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json; charset=utf-8",
@@ -37,21 +37,23 @@ function submitForm() {
                 }).then(response => {
                     return response.status
                 }).then((status) => {
-                    console.log(typeof status);
                     switch (status) {
                         case 200:
+                            // Successful Authorization
                             // TODO: set cookie
                             console.log(status);
                             break;
                         case 403:
+                            // Failed Authorization
                             console.log(status);
-                            // TODO: check if user already exists
-                            // TODO: add user
                             submit.parent().prepend("<h4 id='logInError' class='mr-4'>Invalid user-credentials!</h4>");
                             setTimeout(function () {
                                 $("#logInError").remove();
                             }, 2000);
-
+                            break;
+                        default:
+                            // Unexpected Error
+                            console.log("Unexpected error at: ", status);
                             break;
                     }
                 }).catch(err => console.log(err));
@@ -60,14 +62,49 @@ function submitForm() {
         case "signUp":
             if( validatePassConfSignUp() &&
                 validatePassSignUp() &&
-                validateUserSignUp()) {
+                validateUserSignUp())
+            {
+                // TODO: check if user already exists
+                // TODO: add user
                 console.log("sign up");
-                emptySignUpInput();
-                submit.parent().prepend("<h4 id='signUpSuccess' class='mr-4'>Account created, please log in!</h4>");
-                setTimeout(function () {
-                    $("#signUpSuccess").remove();
-                }, 2000);
+                let data = {
+                    "username" : userSignUp.val().toLowerCase(),
+                    "password" : passSignUp.val().toLowerCase(),
+                    "avatar" : "1"
+                };
+                fetch('http://localhost:9000/api/users',{
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                    },
+                    body: JSON.stringify(data), // body data type must match "Content-Type" header
+                })
+                .then(response => {
+                    emptySignUpInput();
+                    // Give successful sign-up feedback
+                    if(response.status === 200) {
+                        submit.parent().prepend("<h4 id='signUpSuccess' class='mr-4'>Account created, please log in!</h4>");
+                        setTimeout(function () {
+                            $("#signUpSuccess").remove();
+                        }, 2000);
+                    }
+                    // Give failed sign-up feedback
+                    if (response.status === 404) {
+                        submit.parent().prepend("<h4 id='signUpFail' class='mr-4'>Username already in use!</h4>");
+                        setTimeout(function () {
+                            $("#signUpFail").remove();
+                        }, 2000);
+                    }
+                })
+                .catch(error => {
+                    emptySignUpInput();
+                    console.log(error)
+                });
             }
+            break;
+        default:
+            // Unexpected error
+            console.log("Unexpected error at: ", id);
             break;
     }
 }

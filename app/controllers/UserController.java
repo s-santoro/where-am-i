@@ -66,8 +66,23 @@ public class UserController extends Controller
 			});
 		}
 		User userToPersist = Json.fromJson(json, User.class);
-		return userService.add(userToPersist)
-				.thenApplyAsync(user -> ok(Json.toJson(user)), ec.current());
+
+		// first check if user exists in database
+		// if user exists => result = status 404
+		// if user doesn't exists = add user to database and result = ok
+		return userService.check(userToPersist.getUsername())
+				.thenApplyAsync(aBoolean -> aBoolean, ec.current())
+				.thenCompose(aBoolean -> {
+					if (aBoolean) {
+						return CompletableFuture.supplyAsync(() -> {
+							return status(404, "Error: Resource not found!");
+						});
+					}
+					else {
+					return userService.add(userToPersist)
+							.thenApplyAsync(user -> ok(Json.toJson(user)), ec.current());
+					}
+				});
 	}
 
 	public CompletionStage<Result> getUser(long id)
@@ -118,7 +133,7 @@ public class UserController extends Controller
 	 * 	GET: header { key: Authorization, value: "Basic username:password" }
 	 * @return Result ok() when user is authorized or result forbidden if not
 	 */
-	public CompletionStage<Result> userExists()
+	public CompletionStage<Result> userValidate()
 	{
 		Optional<String> auth = request().getHeaders().get("Authorization");
 		if (auth.isPresent())
@@ -128,7 +143,7 @@ public class UserController extends Controller
 				String[] credentials = auth.get()
 						.replace("Basic ", "")
 						.split(":");
-				return userService.check(credentials)
+				return userService.validate(credentials)
 						.thenApplyAsync(aBoolean -> {
 							if (aBoolean)
 							{

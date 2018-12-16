@@ -51,5 +51,12 @@ public interface UserService {
      * @param credentials only contains username and password
      * @return {@code true} if validation successful, otherwise {@code false}
      */
-    CompletionStage<Boolean> check(String[] credentials);
+    CompletionStage<Boolean> validate(String[] credentials);
+
+    /**
+     * Check if user exists in database.
+     * @param username as string
+     * @return {@code true} if validation successful, otherwise {@code false}
+     */
+    CompletionStage<Boolean> check(String username);
 }

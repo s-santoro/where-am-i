@@ -107,7 +107,7 @@ public class DefaultUserService implements UserService
 	 * @param credentials only contains username and password
 	 * @return {@code true} if validation successful, otherwise {@code false}
 	 */
-	public CompletionStage<Boolean> check(String[] credentials)
+	public CompletionStage<Boolean> validate(String[] credentials)
 	{
 		return userRepository.findByName(credentials[0])
 				.thenApplyAsync(user -> {
@@ -138,6 +138,25 @@ public class DefaultUserService implements UserService
 
 					return (username.equals(usernameToCheck) &&
 							password.equals(hashedPWToCheck));
+				});
+	}
+
+	/**
+	 * Check if user exists in database.
+	 *
+	 * @param username as a string
+	 * @return {@code true} if validation successful, otherwise {@code false}
+	 */
+	public CompletionStage<Boolean> check(String username)
+	{
+		return userRepository.findByName(username)
+				.thenApplyAsync(user -> {
+					if (user == null)
+					{
+						return false;
+					}
+
+					return username.equals(user.getUsername());
 				});
 	}
 

@@ -16,15 +16,12 @@ function highscore(context) {
                     '</tbody>'+
                 '</table>';
     $('#app').append(table);
-    let highscoreInfo = {
-        user: userArray[importUser()],
-        games: games[test],
-        average: average[createAverageScore()]
-    };
-    importUser();
+    generateTableContent();
+
 }
 
-function importUser() {
+function generateTableContent() {
+    //Create Array with Users
     let userArray = [];
     fetch('http://localhost:9000/api/users')
         .then(function(response) {
@@ -32,8 +29,50 @@ function importUser() {
         })
         .then(function(myJson) {
             myJson.forEach((element) => {
-                userArray.push(element.username);
+                let user = {user_fk: element.id, username: element.username, avg_score: 0, nrOfGames: 0};
+                userArray.push(user);
             });
-        });
-    return userArray;
+        })
+        .then(
+            //Get Session Information to fill Array
+            fetch('http://localhost:9000/api/sessions')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(Sessions) {
+                    //Fill Array with Information
+                    userArray.forEach((userElement) => {
+                        Sessions.forEach((sessionElement) => {
+                            if(userElement.user_fk==sessionElement.user_fk){
+                                userElement.avg_score+=sessionElement.score;
+                                userElement.nrOfGames++;
+                            }
+                        });
+                    });
+                    //Calculate Average Score
+                    userArray.forEach((userElement) => {
+                        userElement.avg_score = Math.round(userElement.avg_score/userElement.nrOfGames);
+                    });
+                    //Remove Users with zero number of Games
+                    userArray.forEach((userElement, index) => {
+                        if(userElement.nrOfGames==0){
+                            userArray.splice(index, 1);
+                        }
+                    });
+                    //Sort Table for average Score
+                    userArray.sort((a,b) => (a.avg_score > b.avg_score) ? 1 : ((b.avg_score > a.avg_score) ? -1 : 0));
+                    // Put Information into Table
+                    let counter = 1;
+                    userArray.forEach((userElement) => {
+                        let userRow =   '<tr>'+
+                            '<th scope="row">'+ counter +'</th>'+
+                            '<td>'+ userElement.username +'</td>'+
+                            '<td>'+ userElement.nrOfGames +'</td>'+
+                            '<td>'+ userElement.avg_score +'</td>'+
+                            '</tr>';
+                        $('#tableContent').append(userRow);
+                        counter++;
+                    });
+                })
+        );
 }

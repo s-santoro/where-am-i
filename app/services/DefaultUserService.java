@@ -3,10 +3,14 @@ package services;
 import com.google.inject.Inject;
 import models.User;
 import models.UserRepository;
+import org.apache.commons.codec.binary.Base64;
 import play.Logger;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.concurrent.CompletionStage;
@@ -14,7 +18,6 @@ import java.util.stream.Stream;
 
 public class DefaultUserService implements UserService
 {
-
 	private final UserRepository userRepository;
 
 	@Inject public DefaultUserService(UserRepository userRepository)
@@ -79,69 +82,114 @@ public class DefaultUserService implements UserService
 	 */
 	@Override public CompletionStage<User> add(User user)
 	{
-		SecureRandom random = new SecureRandom();
-		byte[] salt = new byte[16];
-		random.nextBytes(salt);
-
-		byte[] hashedPassword = getHashedPassword(salt, user.getPassword());
-		user.setSalt(salt);
+		try
+		{
+			user.setSalt(getSalt());
+		}
+		catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+			String hashedPassword = get_SHA_512_SecurePassword(user.getPassword(),
+					user.getSalt());
+		if (hashedPassword == null)
+		{
+			return null;
+		}
 		user.setPassword(hashedPassword);
-
 		return userRepository.add(user);
 	}
 
 	/**
 	 * Check if user-credentials from log-in form equals existing user in database.
-	 * First get id by username.
-	 * @param userToCheck only contains username and password
+	 * First get id by username, then calculate hash for password from log-in form
+	 * and then compare both hashes.
+	 *
+	 * @param credentials only contains username and password
 	 * @return {@code true} if validation successful, otherwise {@code false}
 	 */
-	public CompletionStage<Boolean> check(User userToCheck)
+	public CompletionStage<Boolean> check(String[] credentials)
 	{
-		// TODO: get id of userToCheck
-		return get(userToCheck.getId()).thenApplyAsync(user -> {
+		return userRepository.findByName(credentials[0])
+				.thenApplyAsync(user -> {
+					if (user == null)
+					{
+						return false;
+					}
+					// username, password and salt from user in database
+					String username = user.getUsername();
+					String password = user.getPassword();
+					String salt = user.getSalt();
 
-			byte[] password = user.getPassword();
-			byte[] salt = user.getSalt();
-			// salted password of userToCheck
-			byte[] passwordUserToCheck = getHashedPassword(salt, userToCheck.getPassword());
+					// username and password from user to check
+					String usernameToCheck = credentials[0];
+					String passwordToCheck = credentials[1];
 
-			Logger.info("check salt: {}", salt);
-			Logger.info("check password: {}", password);
-			Logger.info("check digest: {}", passwordUserToCheck);
+					String hashedPWToCheck = get_SHA_512_SecurePassword(passwordToCheck, salt);
 
-			return (user.getUsername().equals(userToCheck.getUsername()) &&
-					password.equals(passwordUserToCheck));
-		});
+					Logger.info("user in database ---------------------------");
+					Logger.info("salt:-{}-", salt);
+					Logger.info("username:-{}-", username);
+					Logger.info("password:-{}-", password);
+
+					Logger.info("user to check ------------------------------");
+					Logger.info("salt:-{}-", salt);
+					Logger.info("username:-{}-", usernameToCheck);
+					Logger.info("hashedPassword:-{}-", hashedPWToCheck);
+
+					return (username.equals(usernameToCheck) &&
+							password.equals(hashedPWToCheck));
+				});
 	}
 
 	/**
-	 * Hash password with given salt and return salt+hashed-password
-	 *
-	 * @param salt
-	 * @param password
-	 * @return byte-array of salt and hashed-password
+	 * Convert bytes in bytes-array from decimal to hexadecimal format
+	 * and return them as a string.
+	 * @param bytes bytes-array in decimal format
+	 * @return string with hexadecimal bytes
 	 */
-	private byte[] getHashedPassword(byte[] salt, byte[] password)
-	{
-		// MessageDigest throws NoSuchAlgorithmException
-		// ByteArrayOutputStream throws IOException
-		try
+	private String bytesToHexString(byte[] bytes) {
+		StringBuilder sb = new StringBuilder();
+		for(int i=0; i< bytes.length ;i++)
 		{
-			MessageDigest md = MessageDigest.getInstance("SHA-512");
-			md.update(salt);
-			md.update(password);
-			byte[] hashedPassword = md.digest();
-
-			Logger.info("salt: {}", salt);
-			Logger.info("password: {}", password);
-			Logger.info("hashedPassword: {}", hashedPassword);
-
-			return hashedPassword;
+			sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
-		catch (Exception e) {
-			Logger.error("Error occurred at {}",Thread.currentThread().getStackTrace()[1]);
-		}
-		return null;
+		return sb.toString();
 	}
+
+	/**
+	 * Hash password with given salt and return it in hexadecimal format.
+	 * @param passwordToHash as string
+	 * @param salt as string
+	 * @return hashed password as string in hexadecimal format
+	 */
+	private String get_SHA_512_SecurePassword(String passwordToHash, String salt)
+	{
+		String generatedPassword = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.update(salt.getBytes());
+			byte[] bytes = md.digest(passwordToHash.getBytes());
+			generatedPassword = bytesToHexString(bytes);
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			e.printStackTrace();
+		}
+		return generatedPassword;
+	}
+
+	/**
+	 * Generate a secure pseudo-random salt with size 16Bytes.
+	 * As PRNG is SHA1PRNG used.
+	 * @return salt as string in hexadecimal format
+	 * @throws NoSuchAlgorithmException
+	 */
+	private String getSalt() throws NoSuchAlgorithmException
+	{
+		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+		byte[] salt = new byte[16];
+		sr.nextBytes(salt);
+		return bytesToHexString(salt);
+	}
+
 }

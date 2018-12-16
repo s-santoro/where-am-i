@@ -19,8 +19,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
-    private byte[] password;
-    private byte[] salt;
+    private String password;
+    private String salt;
     // save id of avatar
     private Long avatar;
 
@@ -40,17 +40,17 @@ public class User {
         this.username = username;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public byte[] getSalt() { return salt; }
+    public String getSalt() { return salt; }
 
-    public void setSalt(byte[] salt) { this.salt = salt; }
+    public void setSalt(String salt) { this.salt = salt; }
 
     public Long getAvatar() {
         return avatar;

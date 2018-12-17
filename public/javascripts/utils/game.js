@@ -1,6 +1,8 @@
+
+
 const mapillaryId = 'UlhwcmNzcEs2TFpQaEQ1TEFRaWtaZzo1MDk0NjU0OGY5YjNjYzA2';
 let clicked = false;
-let userID = 2;
+let userID;
 
 function game(context) {
 //Structure
@@ -32,9 +34,24 @@ function game(context) {
     }
 
   });
-//MAPILLARY
+  //MAPILLARY
   createMapillary();
   //LEAFLET
   createLeaflet();
+  //USER
+  getUserID();
 
+}
+
+function getUserID(){
+  let username = document.cookie;
+  username = username.substring(10);
+    fetch('http://localhost:9000/api/users/getId?username='+ username)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(myJson) {
+          userID = myJson;
+          console.log(userID);
+        });
 }

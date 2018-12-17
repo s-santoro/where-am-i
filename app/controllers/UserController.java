@@ -227,7 +227,6 @@ public class UserController extends Controller
 		{
 			return userService.getIdByName(username)
 					.thenApplyAsync(id -> {
-						response().discardCookie("logged-in");
 						return ok(Json.toJson(id));
 					});
 		}

@@ -184,7 +184,6 @@ public class UserController extends Controller
 
 								Http.Cookie cookie = Http.Cookie.builder("logged-in", credentials[0]).build();
 								return ok(Json.toJson("Validation successful")).withCookies(cookie);
-
 							}
 							else
 							{
@@ -206,12 +205,13 @@ public class UserController extends Controller
 	 * @return Result ok() if logout was successful
 	 */
 	public CompletionStage<Result> userLogout() {
-		if(session().isEmpty()) {
-			return CompletableFuture.supplyAsync(() -> ok());
-		}
-		else {
-			return CompletableFuture.supplyAsync(() -> badRequest());
-		}
+//		if(session().isEmpty()) {
+//			return CompletableFuture.supplyAsync(() -> ok());
+//		}
+//		else {
+//			return CompletableFuture.supplyAsync(() -> badRequest());
+//		}
+		return CompletableFuture.supplyAsync(() -> ok("userlogout"));
 	}
 
 	/**

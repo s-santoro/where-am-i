@@ -21,12 +21,16 @@ function submitForm() {
                     }
                 }).then(response => {
                     emptyLogInput();
-                    return response.status
-                }).then((status) => {
+                    console.log(response);
+                    console.log(document.cookie);
+                    return response.json()
+                }).then((json) => {
+                    console.log(json);
                     switch (status) {
                         case 200:
                             // Successful Authorization
                             // TODO: set cookie
+                            console.log(document.cookie);
                             console.log(status);
                             $('#registerModal').modal('toggle');
                             setUserMenu(username);

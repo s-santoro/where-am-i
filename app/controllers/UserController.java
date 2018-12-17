@@ -5,15 +5,20 @@ import com.google.inject.Inject;
 import models.User;
 import org.apache.commons.codec.binary.Base64;
 import play.Logger;
+import play.api.mvc.Cookie;
 import play.api.mvc.Session;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
+import scala.Option;
 import services.UserService;
 
 import java.io.IOException;
+import java.net.HttpCookie;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -174,13 +179,16 @@ public class UserController extends Controller
 							if (aBoolean)
 							{
 								// TODO: set session-conf in application.conf
-								session("logged-in", "true");
-								session("logged-in-as", credentials[0]);
-								return ok("Validation successful");
+								//session("logged-in", "true");
+								//session("logged-in-as", credentials[0]);
+
+								Http.Cookie cookie = Http.Cookie.builder("", "usernameid:1").build();
+								return ok(Json.toJson("Validation successful")).withCookies(cookie);
+
 							}
 							else
 							{
-								return forbidden("Validation failed");
+								return forbidden("Validation failed").withCookies();
 							}
 						}, ec.current());
 

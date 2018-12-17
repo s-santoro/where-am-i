@@ -211,7 +211,8 @@ public class UserController extends Controller
 //		else {
 //			return CompletableFuture.supplyAsync(() -> badRequest());
 //		}
-		return CompletableFuture.supplyAsync(() -> ok("userlogout"));
+		response().discardCookie("logged-in");
+		return CompletableFuture.supplyAsync(() -> ok());
 	}
 
 	/**

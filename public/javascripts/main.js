@@ -4,14 +4,17 @@
 var app = $.sammy('#app', function() {
     this.get('#/game', function(context) {
         context.app.swap('');
+        setNavbarAccordingCookie();
         game(context);
     });
      this.get('#/user', function(context) {
          context.app.swap('');
+         setNavbarAccordingCookie();
          user(context);
      });
     this.get('#/highscore', function (context) {
         context.app.swap('');
+        setNavbarAccordingCookie();
         highscore(context);
     });
 });

@@ -227,6 +227,9 @@ public class UserController extends Controller
 		{
 			return userService.getIdByName(username)
 					.thenApplyAsync(id -> {
+						if (id == null) {
+							return badRequest();
+						}
 						return ok(Json.toJson(id));
 					});
 		}

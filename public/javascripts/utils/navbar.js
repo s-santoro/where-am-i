@@ -1,5 +1,18 @@
 const navbarUser = $("#navbarUser");
 
+// detect any window-change and set navbar according to cookie correctly
+function setNavbarAccordingCookie() {
+    let cookie = document.cookie;
+    if(cookie.length === 0) {
+        console.log("reset navbar");
+        resetNavbar();
+    }
+    else {
+        console.log("cookie: ", cookie);
+    }
+}
+
+
 function setUserMenu(username) {
     navbarUser.html(
         '<li class="nav-item dropdown">' +
@@ -17,7 +30,6 @@ function setUserMenu(username) {
 }
 
 function logOut() {
-    // TODO: delete cookie
     fetch('http://localhost:9000/api/users/logout')
     .then(response => {
         emptyLogInput();

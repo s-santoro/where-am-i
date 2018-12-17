@@ -167,7 +167,12 @@ public class DefaultUserService implements UserService
 	 */
 	public CompletionStage<Long> getIdByName(String username) {
 		return  userRepository.findByName(username)
-				.thenApplyAsync(user -> user.getId());
+				.thenApplyAsync(user -> {
+					if(user == null) {
+						return null;
+					}
+					return user.getId();
+				});
 	}
 
 	/**

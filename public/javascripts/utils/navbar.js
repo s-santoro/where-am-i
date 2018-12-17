@@ -4,11 +4,11 @@ const navbarUser = $("#navbarUser");
 function setNavbarAccordingCookie() {
     let cookie = document.cookie;
     if(cookie.length === 0) {
-        console.log("reset navbar");
         resetNavbar();
     }
     else {
-        console.log("cookie: ", cookie);
+        let user = cookie.replace("logged-in=", "");
+        setUserMenu(user);
     }
 }
 
@@ -36,9 +36,8 @@ function logOut() {
         return response.status
     }).then((status) =>  {
         console.log(status);
+        setNavbarAccordingCookie();
     }).catch(err => console.log(err));
-
-    resetNavbar();
 }
 
 function resetNavbar() {

@@ -182,7 +182,7 @@ public class UserController extends Controller
 								//session("logged-in", "true");
 								//session("logged-in-as", credentials[0]);
 
-								Http.Cookie cookie = Http.Cookie.builder("", "usernameid:1").build();
+								Http.Cookie cookie = Http.Cookie.builder("logged-in", "usernameid:1").build();
 								return ok(Json.toJson("Validation successful")).withCookies(cookie);
 
 							}
@@ -206,7 +206,6 @@ public class UserController extends Controller
 	 * @return Result ok() if logout was successful
 	 */
 	public CompletionStage<Result> userLogout() {
-		session().clear();
 		if(session().isEmpty()) {
 			return CompletableFuture.supplyAsync(() -> ok());
 		}
@@ -226,7 +225,10 @@ public class UserController extends Controller
 		if (checkSession())
 		{
 			return userService.getIdByName(username)
-					.thenApplyAsync(id -> ok(Json.toJson(id)));
+					.thenApplyAsync(id -> {
+						response().discardCookie("logged-in");
+						return ok(Json.toJson(id));
+					});
 		}
 		else
 		{
@@ -241,17 +243,18 @@ public class UserController extends Controller
 	@SuppressWarnings("Duplicates")
 	private Boolean checkSession()
 	{
-		if (!session().isEmpty())
-		{
-			if (!session("logged-in").isEmpty())
-			{
-				if (session("logged-in").equals("true"))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
+//		if (!session().isEmpty())
+//		{
+//			if (!session("logged-in").isEmpty())
+//			{
+//				if (session("logged-in").equals("true"))
+//				{
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+		return true;
 	}
 
 	/**

@@ -44,8 +44,6 @@ public class UserController extends Controller
 
 	public CompletionStage<Result> getUsers()
 	{
-		if (checkSession())
-		{
 			return userService.get().thenApplyAsync(userStream -> {
 				if (userStream == null)
 				{
@@ -55,11 +53,6 @@ public class UserController extends Controller
 				}
 				return ok(Json.toJson(userStream.collect(Collectors.toList())));
 			}, ec.current());
-		}
-		else
-		{
-			return CompletableFuture.supplyAsync(() -> forbidden());
-		}
 	}
 
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> createNewUser()

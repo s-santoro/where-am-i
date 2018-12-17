@@ -40,8 +40,6 @@ public class LocationController extends Controller
 
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> getLocations()
 	{
-		if (checkSession())
-		{
 			return locationService.get().thenApplyAsync(locationStream -> {
 				if (locationStream == null)
 				{
@@ -53,11 +51,6 @@ public class LocationController extends Controller
 				return ok(Json.toJson(
 						locationStream.collect(Collectors.toList())));
 			}, ec.current());
-		}
-		else
-		{
-			return CompletableFuture.supplyAsync(() -> forbidden());
-		}
 	}
 
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> getLocation(

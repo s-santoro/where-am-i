@@ -35,8 +35,6 @@ public class SessionController extends Controller {
 
     @SuppressWarnings("Duplicates")
     public CompletionStage<Result> getSessions(String query) {
-        if (checkSession())
-        {
             return sessionService.get(query).thenApplyAsync(sessionStream -> {
                 if (sessionStream == null)
                 {
@@ -45,16 +43,9 @@ public class SessionController extends Controller {
                 }
                 return ok(Json.toJson(sessionStream.collect(Collectors.toList())));
             }, ec.current());
-        }
-        else
-        {
-            return CompletableFuture.supplyAsync(() -> forbidden());
-        }
     }
 
     public CompletionStage<Result> getSession(long id) {
-        if (checkSession())
-        {
             return sessionService.get(id).thenApplyAsync(session -> {
                 if (session == null)
                 {
@@ -63,11 +54,6 @@ public class SessionController extends Controller {
                 }
                 return ok(Json.toJson(session));
             });
-        }
-        else
-        {
-            return CompletableFuture.supplyAsync(() -> forbidden());
-        }
     }
 
     public CompletionStage<Result> createNewSession() {

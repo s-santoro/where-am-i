@@ -6,10 +6,10 @@ var app = $.sammy('#app', function() {
         context.app.swap('');
         game(context);
     });
-    this.get('#/user', function(context) {
-        context.app.swap('');
-        user(context);
-    });
+    // this.get('#/user', function(context) {
+    //     context.app.swap('');
+    //     user(context);
+    // });
     this.get('#/highscore', function (context) {
         context.app.swap('');
         highscore(context);

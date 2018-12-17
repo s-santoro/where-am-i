@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import models.User;
 import org.apache.commons.codec.binary.Base64;
 import play.Logger;
+import play.api.mvc.Session;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
@@ -43,15 +44,22 @@ public class UserController extends Controller
 
 	public CompletionStage<Result> getUsers()
 	{
-		return userService.get().thenApplyAsync(userStream -> {
-			if (userStream == null)
-			{
-				Logger.error("Error occurred at {}",
-						Thread.currentThread().getStackTrace()[1]);
-				return status(404, "Error: Resource not found");
-			}
-			return ok(Json.toJson(userStream.collect(Collectors.toList())));
-		}, ec.current());
+		if (checkSession())
+		{
+			return userService.get().thenApplyAsync(userStream -> {
+				if (userStream == null)
+				{
+					Logger.error("Error occurred at {}",
+							Thread.currentThread().getStackTrace()[1]);
+					return status(404, "Error: Resource not found");
+				}
+				return ok(Json.toJson(userStream.collect(Collectors.toList())));
+			}, ec.current());
+		}
+		else
+		{
+			return CompletableFuture.supplyAsync(() -> forbidden());
+		}
 	}
 
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> createNewUser()
@@ -73,35 +81,46 @@ public class UserController extends Controller
 		return userService.check(userToPersist.getUsername())
 				.thenApplyAsync(aBoolean -> aBoolean, ec.current())
 				.thenCompose(aBoolean -> {
-					if (aBoolean) {
+					if (aBoolean)
+					{
 						return CompletableFuture.supplyAsync(() -> {
 							return status(404, "Error: Resource not found!");
 						});
 					}
-					else {
-					return userService.add(userToPersist)
-							.thenApplyAsync(user -> ok(Json.toJson(user)), ec.current());
+					else
+					{
+						return userService.add(userToPersist)
+								.thenApplyAsync(user -> ok(Json.toJson(user)),
+										ec.current());
 					}
 				});
 	}
 
 	public CompletionStage<Result> getUser(long id)
 	{
-		return userService.get(id).thenApplyAsync(user -> {
-			if (user == null)
-			{
-				Logger.error("Error occurred at  {}",
-						Thread.currentThread().getStackTrace()[1]);
-				return status(404, "Error: Resource not found!");
-			}
-			return ok(Json.toJson(user));
-		}, ec.current());
+		if(checkSession())
+		{
+			return userService.get(id).thenApplyAsync(user -> {
+				if (user == null)
+				{
+					Logger.error("Error occurred at  {}",
+							Thread.currentThread().getStackTrace()[1]);
+					return status(404, "Error: Resource not found!");
+				}
+				return ok(Json.toJson(user));
+			}, ec.current());
+		}
+		else
+		{
+			return CompletableFuture.supplyAsync(() -> forbidden());
+		}
 	}
 
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> deleteUser(
 			long id)
 	{
-		return userService.delete(id).thenApplyAsync(user -> {
+		if (checkSession()) {
+			return userService.delete(id).thenApplyAsync(user -> {
 			if (user == null)
 			{
 				Logger.error("Error occurred at {}",
@@ -110,43 +129,60 @@ public class UserController extends Controller
 			}
 			return ok(Json.toJson(user));
 		}, ec.current());
+		}
+		else
+		{
+			return CompletableFuture.supplyAsync(() -> forbidden());
+		}
 	}
 
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> updateUser()
 	{
-		final JsonNode json = Json.toJson(request().body().asJson());
-		if (json.isNull() || !validateUser(json))
+		if (checkSession())
 		{
-			CompletableFuture.supplyAsync(() -> {
-				Logger.error("Error occurred at {}",
-						Thread.currentThread().getStackTrace()[1]);
-				return status(404, "Error: Resource not found!");
-			});
+
+			final JsonNode json = Json.toJson(request().body().asJson());
+			if (json.isNull() || !validateUser(json))
+			{
+				CompletableFuture.supplyAsync(() -> {
+					Logger.error("Error occurred at {}",
+							Thread.currentThread().getStackTrace()[1]);
+					return status(404, "Error: Resource not found!");
+				});
+			}
+			User userToUpdate = Json.fromJson(json, User.class);
+			return userService.update(userToUpdate)
+					.thenApplyAsync(user -> ok(Json.toJson(user)),
+							ec.current());
 		}
-		User userToUpdate = Json.fromJson(json, User.class);
-		return userService.update(userToUpdate)
-				.thenApplyAsync(user -> ok(Json.toJson(user)), ec.current());
+		else
+		{
+			return CompletableFuture.supplyAsync(() -> forbidden());
+		}
 	}
 
 	/**
 	 * Client sends authorization request:
-	 * 	GET: header { key: Authorization, value: "Basic username:password" }
+	 * GET: header { key: Authorization, value: "Basic username:password" }
+	 *
 	 * @return Result ok() when user is authorized or result forbidden if not
 	 */
-	public CompletionStage<Result> userValidate()
+	public CompletionStage<Result> userLogin()
 	{
 		Optional<String> auth = request().getHeaders().get("Authorization");
 		if (auth.isPresent())
 		{
 			try
 			{
-				String[] credentials = auth.get()
-						.replace("Basic ", "")
+				String[] credentials = auth.get().replace("Basic ", "")
 						.split(":");
 				return userService.validate(credentials)
 						.thenApplyAsync(aBoolean -> {
 							if (aBoolean)
 							{
+								// TODO: set session-conf in application.conf
+								session("logged-in", "true");
+								session("logged-in-as", credentials[0]);
 								return ok("Validation successful");
 							}
 							else
@@ -157,10 +193,64 @@ public class UserController extends Controller
 
 			} catch (Exception e)
 			{
-				Logger.error("Error occurred at {}", Thread.currentThread().getStackTrace()[1]);
+				Logger.error("Error occurred at {}",
+						Thread.currentThread().getStackTrace()[1]);
 			}
 		}
 		return CompletableFuture.supplyAsync(() -> badRequest("Bad Request"));
+	}
+
+	/**
+	 * Client sends a logout-signal and session will be deleted
+	 * @return Result ok() if logout was successful
+	 */
+	public CompletionStage<Result> userLogout() {
+		session().clear();
+		if(session().isEmpty()) {
+			return CompletableFuture.supplyAsync(() -> ok());
+		}
+		else {
+			return CompletableFuture.supplyAsync(() -> badRequest());
+		}
+	}
+
+	/**
+	 * Get id of given username.
+	 *
+	 * @param username as string
+	 * @return Result with id
+	 */
+	public CompletionStage<Result> getIdByName(String username)
+	{
+		if (checkSession())
+		{
+			return userService.getIdByName(username)
+					.thenApplyAsync(id -> ok(Json.toJson(id)));
+		}
+		else
+		{
+			return CompletableFuture.supplyAsync(() -> forbidden());
+		}
+	}
+
+	/**
+	 * check if session exists and user is logged in.
+	 * @return {@code true} if user is logged in or else {@code false}
+	 */
+	@SuppressWarnings("Duplicates")
+	private Boolean checkSession()
+	{
+		if (!session().isEmpty())
+		{
+			if (!session("logged-in").isEmpty())
+			{
+				if (session("logged-in").equals("true"))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

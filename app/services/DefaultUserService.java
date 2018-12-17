@@ -161,6 +161,16 @@ public class DefaultUserService implements UserService
 	}
 
 	/**
+	 * Get id of username.
+	 * @param username as string
+	 * @return id of user
+	 */
+	public CompletionStage<Long> getIdByName(String username) {
+		return  userRepository.findByName(username)
+				.thenApplyAsync(user -> user.getId());
+	}
+
+	/**
 	 * Convert bytes in bytes-array from decimal to hexadecimal format
 	 * and return them as a string.
 	 * @param bytes bytes-array in decimal format

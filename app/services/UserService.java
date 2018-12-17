@@ -59,4 +59,11 @@ public interface UserService {
      * @return {@code true} if validation successful, otherwise {@code false}
      */
     CompletionStage<Boolean> check(String username);
+
+    /**
+     * Get id of username.
+     * @param username as string
+     * @return id of user
+     */
+    CompletionStage<Long> getIdByName(String username);
 }

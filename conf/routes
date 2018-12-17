@@ -11,7 +11,9 @@ GET     /                           controllers.HomeController.index
 GET     /api/users              controllers.UserController.getUsers
 POST    /api/users              controllers.UserController.createNewUser
 PUT     /api/users              controllers.UserController.updateUser
-GET     /api/users/validate        controllers.UserController.userValidate
+GET     /api/users/login        controllers.UserController.userLogin
+GET     /api/users/logout       controllers.UserController.userLogout
+GET     /api/users/getId        controllers.UserController.getIdByName(username: String)
 GET     /api/users/:id          controllers.UserController.getUser(id: Long)
 DELETE  /api/users/:id          controllers.UserController.deleteUser(id: Long)
 

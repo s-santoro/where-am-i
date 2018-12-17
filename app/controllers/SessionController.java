@@ -35,39 +35,80 @@ public class SessionController extends Controller {
 
     @SuppressWarnings("Duplicates")
     public CompletionStage<Result> getSessions(String query) {
-        return sessionService.get(query).thenApplyAsync(sessionStream -> {
-            if(sessionStream == null) {
-                Logger.error("Error occurred at {}",
-                    Thread.currentThread().getStackTrace()[1]);
-                return status(404, "Error: Resource not found!");
-            }
-            return ok(Json.toJson(sessionStream.collect(Collectors.toList())));
-        }, ec.current());
+        if (checkSession())
+        {
+            return sessionService.get(query).thenApplyAsync(sessionStream -> {
+                if (sessionStream == null)
+                {
+                    Logger.error("Error occurred at {}", Thread.currentThread().getStackTrace()[1]);
+                    return status(404, "Error: Resource not found!");
+                }
+                return ok(Json.toJson(sessionStream.collect(Collectors.toList())));
+            }, ec.current());
+        }
+        else
+        {
+            return CompletableFuture.supplyAsync(() -> forbidden());
+        }
     }
 
     public CompletionStage<Result> getSession(long id) {
-        return sessionService.get(id).thenApplyAsync(session -> {
-            if (session == null) {
-                Logger.error("Error occurred at {}",
-                        Thread.currentThread().getStackTrace()[1]);
-                return status(404, "Error: Resource not found");
-            }
-            return ok(Json.toJson(session));
-        });
+        if (checkSession())
+        {
+            return sessionService.get(id).thenApplyAsync(session -> {
+                if (session == null)
+                {
+                    Logger.error("Error occurred at {}", Thread.currentThread().getStackTrace()[1]);
+                    return status(404, "Error: Resource not found");
+                }
+                return ok(Json.toJson(session));
+            });
+        }
+        else
+        {
+            return CompletableFuture.supplyAsync(() -> forbidden());
+        }
     }
 
     public CompletionStage<Result> createNewSession() {
-        final JsonNode json = Json.toJson(request().body().asJson());
-        if (json.isNull() || !validateSession(json)) {
-            CompletableFuture.supplyAsync(() -> {
-                Logger.error("Error occurred at {}",
-                        Thread.currentThread().getStackTrace()[1]);
-                return status(404, "Error: Resource not found!");
-            });
+        if (checkSession())
+        {
+            final JsonNode json = Json.toJson(request().body().asJson());
+            if (json.isNull() || !validateSession(json))
+            {
+                CompletableFuture.supplyAsync(() -> {
+                    Logger.error("Error occurred at {}", Thread.currentThread().getStackTrace()[1]);
+                    return status(404, "Error: Resource not found!");
+                });
+            }
+            Session sessionToPersist = Json.fromJson(json, Session.class);
+            return sessionService.add(sessionToPersist)
+                    .thenApplyAsync(session -> ok(Json.toJson(session)), ec.current());
         }
-        Session sessionToPersist = Json.fromJson(json, Session.class);
-        return sessionService.add(sessionToPersist)
-                .thenApplyAsync(session -> ok(Json.toJson(session)), ec.current());
+        else
+        {
+            return CompletableFuture.supplyAsync(() -> forbidden());
+        }
+    }
+
+    /**
+     * check if session exists and user is logged in.
+     *
+     * @return {@code true} if user is logged in or else {@code false}
+     */
+    @SuppressWarnings("Duplicates") private Boolean checkSession()
+    {
+        if (!session().isEmpty())
+        {
+            if (!session("logged-in").isEmpty())
+            {
+                if (session("logged-in").equals("true"))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

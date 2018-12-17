@@ -30,6 +30,10 @@ libraryDependencies ++= Seq(
   "org.webjars" % "chartjs" % "26962ce-1"
 )
 
+// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+libraryDependencies += "io.jsonwebtoken" % "jjwt" % "0.9.0"
+
+
 PlayKeys.externalizeResources := false
 
 // Testing libraries for dealing with CompletionStage...

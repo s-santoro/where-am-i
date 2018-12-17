@@ -32,9 +32,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#/highscore">Highscore Board</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#/user">User statistics</a>
-                    </li>
+                    @*<li class="nav-item">*@
+                        @*<a class="nav-link" href="#/user">User statistics</a>*@
+                    @*</li>*@
                 </ul>
             </div>
             <div class="mx-auto order-0">
@@ -44,7 +44,7 @@
                 </button>
             </div>
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-                <ul class="navbar-nav ml-auto">
+                <ul id="navbarUser" class="navbar-nav ml-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-toggle="modal" data-target="#registerModal">User</a>
                     </li>
@@ -131,6 +131,8 @@
         <script src="@routes.Assets.versioned("javascripts/utils/highscore.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("javascripts/utils/haversine.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("javascripts/utils/score.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("javascripts/utils/navbar.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("javascripts/utils/validate.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("javascripts/utils/registration.js")" type="text/javascript"></script>
     </body>
 </html>

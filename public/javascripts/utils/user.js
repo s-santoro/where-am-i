@@ -3,10 +3,10 @@
  */
 //let userID = 1;
 
-// function user(context) {
-//     createUserInfo(userID);
-//
-// }
+function user(context) {
+    createUserInfo(userID);
+
+}
 
 function createAverageScore(dataInput, userID){
     let avgScore = '<h4 class="text-center mt-3 mb-3">Average Score: '+ calcAverageScore(dataInput, userID) +' km</h4>';

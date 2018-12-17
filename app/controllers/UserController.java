@@ -182,7 +182,7 @@ public class UserController extends Controller
 								//session("logged-in", "true");
 								//session("logged-in-as", credentials[0]);
 
-								Http.Cookie cookie = Http.Cookie.builder("logged-in", "usernameid:1").build();
+								Http.Cookie cookie = Http.Cookie.builder("logged-in", credentials[0]).build();
 								return ok(Json.toJson("Validation successful")).withCookies(cookie);
 
 							}

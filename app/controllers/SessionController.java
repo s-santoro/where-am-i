@@ -84,17 +84,18 @@ public class SessionController extends Controller {
      */
     @SuppressWarnings("Duplicates") private Boolean checkSession()
     {
-        if (!session().isEmpty())
-        {
-            if (!session("logged-in").isEmpty())
-            {
-                if (session("logged-in").equals("true"))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
+//        if (!session().isEmpty())
+//        {
+//            if (!session("logged-in").isEmpty())
+//            {
+//                if (session("logged-in").equals("true"))
+//                {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+        return true;
     }
 
     /**

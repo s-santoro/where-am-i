@@ -21,11 +21,8 @@ function submitForm() {
                     }
                 }).then(response => {
                     emptyLogInput();
-                    console.log(response);
-                    console.log(document.cookie);
-                    return response.json()
-                }).then((json) => {
-                    console.log(json);
+                    return response.status
+                }).then((status) => {
                     switch (status) {
                         case 200:
                             // Successful Authorization

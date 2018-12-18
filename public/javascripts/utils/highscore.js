@@ -32,8 +32,9 @@ function generateTableContent() {
                 let user = {user_fk: element.id, username: element.username, avg_score: 0, nrOfGames: 0};
                 userArray.push(user);
             });
+            return userArray;
         })
-        .then(
+        .then(function(userArray){
             //Get Session Information to fill Array
             fetch('http://localhost:9000/api/sessions')
                 .then(function(response) {
@@ -49,15 +50,17 @@ function generateTableContent() {
                             }
                         });
                     });
-                    //Calculate Average Score
-                    userArray.forEach((userElement) => {
-                        userElement.avg_score = Math.round(userElement.avg_score/userElement.nrOfGames);
-                    });
                     //Remove Users with zero number of Games
+                    console.log(userArray);
                     userArray.forEach((userElement, index) => {
+                        console.log(index);
                         if(userElement.nrOfGames==0){
                             userArray.splice(index, 1);
                         }
+                    });
+                    //Calculate Average Score
+                    userArray.forEach((userElement) => {
+                        userElement.avg_score = Math.round(userElement.avg_score/userElement.nrOfGames);
                     });
                     //Sort Table for average Score
                     userArray.sort((a,b) => (a.avg_score > b.avg_score) ? 1 : ((b.avg_score > a.avg_score) ? -1 : 0));
@@ -74,5 +77,5 @@ function generateTableContent() {
                         counter++;
                     });
                 })
-        );
+        });
 }

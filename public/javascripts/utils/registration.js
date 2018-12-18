@@ -29,6 +29,7 @@ function submitForm() {
                             // TODO: set cookie
                             $('#registerModal').modal('toggle');
                             setUserMenu(username);
+                            setUserID();
                             break;
                         case 403:
                             // Failed Authorization
@@ -106,4 +107,15 @@ function emptyLogInput() {
     userLogIn.attr("placeholder", "Username");
     passLogIn.val("");
     passLogIn.attr("placeholder", "Password");
+}
+
+function setUserID(){
+    let username = extractUser();
+    fetch('http://localhost:9000/api/users/getId?username='+ username)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(myJson) {
+            userID = myJson;
+        });
 }

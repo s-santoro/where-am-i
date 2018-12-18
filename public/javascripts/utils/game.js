@@ -1,12 +1,10 @@
-
-
 const mapillaryId = 'UlhwcmNzcEs2TFpQaEQ1TEFRaWtaZzo1MDk0NjU0OGY5YjNjYzA2';
 let clicked = false;
 let userID;
 
 function game(context) {
 //Structure
-  let controlPanel = '<div class="container" id="controlPanel"></div>';
+  let controlPanel = '<div class="container text-center" id="controlPanel"></div>';
   let mapillaryContainer = '<div class="container" id="mapillaryContainer"></div>';
   $('#app').append(controlPanel, mapillaryContainer);
 
@@ -16,7 +14,7 @@ function game(context) {
   let resetButton = '<button id="resetButton" type="button" class="btn btn-outline-dark mb-2 mt-2 mr-2">Restart</button>';
   $('#controlPanel').append(resetButton);
   $('#controlPanel').append(evalButton);
-
+  //Button Functionality
   $('#resetButton').click(function() {
     location.reload();
   });
@@ -30,28 +28,15 @@ function game(context) {
         });
 
     }else{
-      alert("Please set your tip");
+      $('#controlPanel').append("<h4 id='noTipError' class='ml-4'>Please set your tip!</h4>");
+      setTimeout(function () {
+          $("#noTipError").remove();
+      }, 2000);
     }
 
   });
-  //MAPILLARY
+  //create Mapillary View
   createMapillary();
-  //LEAFLET
+  //create Leaflet View
   createLeaflet();
-  //USER
-  getUserID();
-
-}
-
-function getUserID(){
-  let username = document.cookie;
-  username = username.substring(10);
-    fetch('http://localhost:9000/api/users/getId?username='+ username)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(myJson) {
-          userID = myJson;
-          console.log(userID);
-        });
 }

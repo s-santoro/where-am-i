@@ -34,6 +34,7 @@ function logOut() {
         return response.status
     }).then((status) =>  {
         setNavbarAccordingCookie();
+        userID = undefined;
     }).catch(err => console.log(err));
 }
 

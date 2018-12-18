@@ -1,16 +1,9 @@
 /*
   javascript for user-rendering
  */
-//let userID = 1;
 
 function user(context) {
     createUserInfo(userID);
-
-}
-
-function createAverageScore(dataInput, userID){
-    let avgScore = '<h4 class="text-center mt-3 mb-3">Average Score: '+ calcAverageScore(dataInput, userID) +' km</h4>';
-    $('#app').append(avgScore);
 }
 
 function createUserInfo(userID){
@@ -22,7 +15,7 @@ function createUserInfo(userID){
         .then(function(myJson) {
             let user =  '<div id="scoreDiv" class="container">' +
                 '<h4 class="text-center mt-3 mb-3">User: '+ myJson.username +'</h4>' +
-                '</div>'; //Todo: Implement USER
+                '</div>';
             $('#app').prepend(user);
         });
     //Average Score and Chart
@@ -32,10 +25,23 @@ function createUserInfo(userID){
         })
         .then(function(myJson) {
             //Average Score
-            createAverageScore(myJson, userID); //Todo: Implement USER
+            createAverageScore(myJson, userID);
             //Chart
-            createChart(preprocessData(myJson, userID)); //Todo: Implement USER
+            createChart(preprocessData(myJson, userID));
         });
+}
+
+
+function createAverageScore(dataInput, userID){
+    let avg = calcAverageScore(dataInput, userID);
+    console.log(avg);
+    let avgScore;
+    if(avg>0){
+        avgScore = '<h4 class="text-center mt-3 mb-3">Average Score: '+ avg +' km</h4>';
+    }else{
+        avgScore = '<h4 class="text-center mt-3 mb-3">Sie haben noch kein Spiel gespielt</h4>';
+    }
+    $('#app').append(avgScore);
 }
 
 

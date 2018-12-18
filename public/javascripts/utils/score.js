@@ -1,5 +1,5 @@
 function showScore(input) {
-    $('#controlPanel').hide();
+    $('#evalButton').hide();
     $('#mapillaryContainer').hide();
 
     let score = '<div id="scoreDiv" class="container">' +
@@ -9,21 +9,23 @@ function showScore(input) {
     createImageMarker(input);
 }
 
-function postSession(user, imgKey, score){
-    let session = {
-        "user_fk": user,
-        "location_fk": imgID,
-        "score": Math.round(score),
-        "timestamp": createISODate()
+function postSession(userID, imgKey, score){
+    if(userID!=null){
+        let session = {
+            "user_fk": userID,
+            "location_fk": imgID,
+            "score": Math.round(score),
+            "timestamp": createISODate()
+        }
+        fetch('http://localhost:9000/api/sessions',{
+            method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(session)
+        });
     }
-    fetch('http://localhost:9000/api/sessions',{
-        method: 'post',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(session)
-    });
 }
 
 function createISODate(){

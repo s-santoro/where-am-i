@@ -17,7 +17,6 @@ function highscore(context) {
                 '</table>';
     $('#app').append(table);
     generateTableContent();
-
 }
 
 function generateTableContent() {
@@ -50,23 +49,26 @@ function generateTableContent() {
                             }
                         });
                     });
-                    //Remove Users with zero number of Games
                     console.log(userArray);
-                    userArray.forEach((userElement, index) => {
-                        console.log(index);
-                        if(userElement.nrOfGames==0){
-                            userArray.splice(index, 1);
+                return userArray;
+                })
+                .then(function(userArray){
+                    let outputArray= [];
+                    //Remove Users with zero number of Games
+                    for(let i = 0; i<userArray.length;i++){
+                        if(userArray[i].nrOfGames!=0){
+                            outputArray.push(userArray[i]);
                         }
-                    });
+                    }
                     //Calculate Average Score
-                    userArray.forEach((userElement) => {
+                    outputArray.forEach((userElement) => {
                         userElement.avg_score = Math.round(userElement.avg_score/userElement.nrOfGames);
                     });
                     //Sort Table for average Score
-                    userArray.sort((a,b) => (a.avg_score > b.avg_score) ? 1 : ((b.avg_score > a.avg_score) ? -1 : 0));
+                    outputArray.sort((a,b) => (a.avg_score > b.avg_score) ? 1 : ((b.avg_score > a.avg_score) ? -1 : 0));
                     // Put Information into Table
                     let counter = 1;
-                    userArray.forEach((userElement) => {
+                    outputArray.forEach((userElement) => {
                         let userRow =   '<tr>'+
                             '<th scope="row">'+ counter +'</th>'+
                             '<td>'+ userElement.username +'</td>'+
@@ -79,3 +81,4 @@ function generateTableContent() {
                 })
         });
 }
+

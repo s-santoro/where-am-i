@@ -110,6 +110,7 @@ function emptyLogInput() {
 }
 
 function setUserID(){
+    clicked = false;
     let username = extractUser();
     fetch('http://localhost:9000/api/users/getId?username='+ username)
         .then(function(response) {

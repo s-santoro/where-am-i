@@ -27,14 +27,11 @@ function submitForm() {
                         case 200:
                             // Successful Authorization
                             // TODO: set cookie
-                            console.log(document.cookie);
-                            console.log(status);
                             $('#registerModal').modal('toggle');
                             setUserMenu(username);
                             break;
                         case 403:
                             // Failed Authorization
-                            console.log(status);
                             submit.parent().prepend("<h4 id='logInFail' class='mr-4'>Invalid user-credentials!</h4>");
                             setTimeout(function () {
                                 $("#logInFail").remove();

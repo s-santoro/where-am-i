@@ -2,13 +2,11 @@ const navbarUser = $("#navbarUser");
 
 // detect any window-change and set navbar according to cookie correctly
 function setNavbarAccordingCookie() {
-    let cookie = document.cookie;
-    if(cookie.length === 0) {
+    if(document.cookie.length === 0) {
         resetNavbar();
     }
     else {
-        let user = cookie.replace("logged-in=", "");
-        setUserMenu(user);
+        setUserMenu(extractUser());
     }
 }
 
@@ -35,7 +33,6 @@ function logOut() {
         emptyLogInput();
         return response.status
     }).then((status) =>  {
-        console.log(status);
         setNavbarAccordingCookie();
     }).catch(err => console.log(err));
 }
@@ -46,4 +43,8 @@ function resetNavbar() {
         '<a class="nav-link" href="#" data-toggle="modal" data-target="#registerModal">User</a>' +
         '</li>'
     );
+}
+
+function extractUser() {
+    return document.cookie.replace("logged-in=", "");
 }

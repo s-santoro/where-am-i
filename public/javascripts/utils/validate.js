@@ -80,6 +80,7 @@ function validatePassConfSignUp() {
  * all letters are lowercase
  */
 function validateUserLogIn() {
+
     let regex = /^\w+$/;
     let input = userLogIn.val().toLowerCase();
     let invalidDiv = '<div id="invalidULI" class="invalid-feedback">Only use alphanumeric signs</div>';

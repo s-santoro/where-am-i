@@ -42,7 +42,6 @@ function submitForm() {
                             break;
                         default:
                             // Unexpected Error
-                            console.log("Unexpected error at: ", status);
                             break;
                     }
                 }).catch(err => console.log(err));
@@ -52,7 +51,6 @@ function submitForm() {
             if (validatePassConfSignUp() &&
                 validatePassSignUp() &&
                 validateUserSignUp()) {
-                console.log("sign up");
                 let data = {
                     "username": userSignUp.val().toLowerCase(),
                     "password": passSignUp.val().toLowerCase(),
@@ -90,7 +88,6 @@ function submitForm() {
             break;
         default:
             // Unexpected error
-            console.log("Unexpected error at: ", id);
             break;
     }
 }

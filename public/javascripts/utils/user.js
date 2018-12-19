@@ -10,7 +10,6 @@ function user(context) {
  * Fetches Data for Userstatistics
  */
 function createUserInfo(userID){
-    console.log(userID);
     app.swap('');
     fetch(url + '/api/users/' + userID)
         .then(function(response) {

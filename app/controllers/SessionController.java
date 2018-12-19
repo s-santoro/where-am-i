@@ -18,18 +18,23 @@ import java.util.stream.Collectors;
  * Controller for handling session-routes.
  *
  * Implemented methods are:
- *      get all sessions
- *      get session with given id
- *      create new session
+ *   getSessions(Query):    get all sessions (filtering by query possible)
+ *   getSession(ID):        get session with given id
+ *   createNewSession():    create new session
+ *   validateSession(Json): validate json of session (no logic implemented)
  */
 public class SessionController extends Controller {
 
     private final SessionService sessionService;
     private final HttpExecutionContext ec;
+    private final CookieChecker cc;
 
     @Inject
-    public SessionController(SessionService sessionService, HttpExecutionContext ec) {
+    public SessionController(SessionService sessionService,
+            CookieChecker cc,
+            HttpExecutionContext ec) {
         this.ec = ec;
+        this.cc = cc;
         this.sessionService = sessionService;
     }
 
@@ -46,6 +51,8 @@ public class SessionController extends Controller {
     }
 
     public CompletionStage<Result> getSession(long id) {
+        if (cc.checkCookie(request().cookie("logged-in")))
+        {
             return sessionService.get(id).thenApplyAsync(session -> {
                 if (session == null)
                 {
@@ -54,10 +61,15 @@ public class SessionController extends Controller {
                 }
                 return ok(Json.toJson(session));
             });
+        }
+        else
+        {
+            return CompletableFuture.supplyAsync(() -> forbidden());
+        }
     }
 
     public CompletionStage<Result> createNewSession() {
-        if (checkSession())
+        if (cc.checkCookie(request().cookie("logged-in")))
         {
             final JsonNode json = Json.toJson(request().body().asJson());
             if (json.isNull() || !validateSession(json))
@@ -78,32 +90,10 @@ public class SessionController extends Controller {
     }
 
     /**
-     * check if session exists and user is logged in.
-     *
-     * @return {@code true} if user is logged in or else {@code false}
-     */
-    @SuppressWarnings("Duplicates") private Boolean checkSession()
-    {
-//        if (!session().isEmpty())
-//        {
-//            if (!session("logged-in").isEmpty())
-//            {
-//                if (session("logged-in").equals("true"))
-//                {
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-        return true;
-    }
-
-    /**
      * Validate session if fields are set correct.
      * @param json with session-parameters
      * @return {@code true} if validation successfull, otherwise {@code false}
      */
-    // TODO: update class-comments if implemented
     private boolean validateSession(JsonNode json) {
         // timestamp-format: "2016-11-16"
 

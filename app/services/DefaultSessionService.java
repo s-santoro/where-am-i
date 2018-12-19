@@ -3,25 +3,23 @@ package services;
 import com.google.inject.Inject;
 import models.Session;
 import models.SessionRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
+/**
+ * Implementation of SessionService-interface.
+ */
 public class DefaultSessionService implements SessionService {
 
-    private final List<Session> sessions;
     private final SessionRepository sessionRepository;
 
     @Inject
     public DefaultSessionService(SessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
-        sessions = new ArrayList<>();
     }
 
     /**
-     * Return's Stream of all Sessions.
+     * Returns Stream of all Sessions.
      * Filters the stream if filter-query is not null.
      * @return Stream of all Sessions nested in a CompletionStage
      */

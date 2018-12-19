@@ -3,22 +3,13 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import models.User;
-import org.apache.commons.codec.binary.Base64;
 import play.Logger;
-import play.api.mvc.Cookie;
-import play.api.mvc.Session;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.Option;
 import services.UserService;
-
-import java.io.IOException;
-import java.net.HttpCookie;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -26,24 +17,31 @@ import java.util.stream.Collectors;
 
 /**
  * Controller for handling user-routes.
- * <p>
+ *
  * Implemented methods are:
- * get all users
- * get user with given id
- * create new user
- * update user with given id
- * delete user with given id
+ *   getUsers():			get all users
+ *   getUser(ID):			get user with given id
+ *   createNewUser():		create new user
+ *   updateUser():			update user with given id
+ *   deleteUser(ID):		delete user with given id
+ *   userLogin():			user Login
+ *   userLogout():			user Logout
+ *   getIdByName(Name):		get user id with given name
+ *   validateUser(Json):	validate json of user (no logic implemented)
  */
 public class UserController extends Controller
 {
 
 	private final UserService userService;
 	private final HttpExecutionContext ec;
+	private final CookieChecker cc;
 
 	@Inject public UserController(UserService userService,
+			CookieChecker cc,
 			HttpExecutionContext ec)
 	{
 		this.ec = ec;
+		this.cc = cc;
 		this.userService = userService;
 	}
 
@@ -96,7 +94,7 @@ public class UserController extends Controller
 
 	public CompletionStage<Result> getUser(long id)
 	{
-		if(checkSession())
+		if(cc.checkCookie(request().cookie("logged-in")))
 		{
 			return userService.get(id).thenApplyAsync(user -> {
 				if (user == null)
@@ -117,7 +115,7 @@ public class UserController extends Controller
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> deleteUser(
 			long id)
 	{
-		if (checkSession()) {
+		if (cc.checkCookie(request().cookie("logged-in"))) {
 			return userService.delete(id).thenApplyAsync(user -> {
 			if (user == null)
 			{
@@ -136,7 +134,7 @@ public class UserController extends Controller
 
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> updateUser()
 	{
-		if (checkSession())
+		if (cc.checkCookie(request().cookie("logged-in")))
 		{
 
 			final JsonNode json = Json.toJson(request().body().asJson());
@@ -162,6 +160,7 @@ public class UserController extends Controller
 	/**
 	 * Client sends authorization request:
 	 * GET: header { key: Authorization, value: "Basic username:password" }
+	 * When authorization was successful, a cookie will be created.
 	 *
 	 * @return Result ok() when user is authorized or result forbidden if not
 	 */
@@ -178,10 +177,6 @@ public class UserController extends Controller
 						.thenApplyAsync(aBoolean -> {
 							if (aBoolean)
 							{
-								// TODO: set session-conf in application.conf
-								//session("logged-in", "true");
-								//session("logged-in-as", credentials[0]);
-
 								Http.Cookie cookie = Http.Cookie.builder("logged-in", credentials[0]).build();
 								return ok(Json.toJson("Validation successful")).withCookies(cookie);
 							}
@@ -201,16 +196,10 @@ public class UserController extends Controller
 	}
 
 	/**
-	 * Client sends a logout-signal and session will be deleted
+	 * Client sends a logout-signal and cookie will be deleted
 	 * @return Result ok() if logout was successful
 	 */
 	public CompletionStage<Result> userLogout() {
-//		if(session().isEmpty()) {
-//			return CompletableFuture.supplyAsync(() -> ok());
-//		}
-//		else {
-//			return CompletableFuture.supplyAsync(() -> badRequest());
-//		}
 		response().discardCookie("logged-in");
 		return CompletableFuture.supplyAsync(() -> ok());
 	}
@@ -223,7 +212,7 @@ public class UserController extends Controller
 	 */
 	public CompletionStage<Result> getIdByName(String username)
 	{
-		if (checkSession())
+		if (cc.checkCookie(request().cookie("logged-in")))
 		{
 			return userService.getIdByName(username)
 					.thenApplyAsync(id -> {
@@ -240,33 +229,11 @@ public class UserController extends Controller
 	}
 
 	/**
-	 * check if session exists and user is logged in.
-	 * @return {@code true} if user is logged in or else {@code false}
-	 */
-	@SuppressWarnings("Duplicates")
-	private Boolean checkSession()
-	{
-//		if (!session().isEmpty())
-//		{
-//			if (!session("logged-in").isEmpty())
-//			{
-//				if (session("logged-in").equals("true"))
-//				{
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-		return true;
-	}
-
-	/**
 	 * Validate user if fields are set correct.
 	 *
 	 * @param json with user-parameters
 	 * @return {@code true} if validation successful, otherwise {@code false}
 	 */
-	// TODO: update class-comments if implemented
 	private boolean validateUser(JsonNode json)
 	{
 		// timestamp-format: "2016-11-16"

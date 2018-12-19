@@ -2,8 +2,6 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import models.Session;
-
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
@@ -11,7 +9,7 @@ import java.util.stream.Stream;
 public interface SessionService {
 
     /**
-     * Return's list of all Sessions.
+     * Returns list of all Sessions.
      * Filters the stream if filter-query is not null.
      * @return Stream of all Sessions nested in a CompletionStage
      */

@@ -2,8 +2,6 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import models.Location;
-
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
@@ -11,7 +9,7 @@ import java.util.stream.Stream;
 public interface LocationService {
 
     /**
-     * Return's Stream of all Locations.
+     * Returns Stream of all Locations.
      * @return Stream of all Locations nested in a CompletionStage
      */
     CompletionStage<Stream<Location>> get();

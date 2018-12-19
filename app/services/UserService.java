@@ -2,10 +2,6 @@ package services;
 
 import com.google.inject.ImplementedBy;
 import models.User;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
@@ -13,7 +9,7 @@ import java.util.stream.Stream;
 public interface UserService {
 
     /**
-     * Return's stream of all Users.
+     * Returns stream of all Users.
      * @return stream of all Users nested in a CompletionStage
      */
     CompletionStage<Stream<User>> get();

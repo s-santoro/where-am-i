@@ -3,19 +3,20 @@ package services;
 import com.google.inject.Inject;
 import models.User;
 import models.UserRepository;
-import org.apache.commons.codec.binary.Base64;
-import play.Logger;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
+/**
+ * Implementation of UserService-interface.
+ *
+ * Additional methods are (private methods):
+ * - bytesToHexString(Byte-Array):	convert byte-array to hex-string
+ * - get_SHA_512_SecurePassword(Password, Salt): get hash from salted password
+ * - getSalt():		get a salt with 16-byte size
+ */
 public class DefaultUserService implements UserService
 {
 	private final UserRepository userRepository;
@@ -26,7 +27,7 @@ public class DefaultUserService implements UserService
 	}
 
 	/**
-	 * Return's stream of all Users.
+	 * Returns stream of all Users.
 	 *
 	 * @return stream of all Users nested in a CompletionStage
 	 */
@@ -107,7 +108,7 @@ public class DefaultUserService implements UserService
 	 * @param credentials only contains username and password
 	 * @return {@code true} if validation successful, otherwise {@code false}
 	 */
-	public CompletionStage<Boolean> validate(String[] credentials)
+	@Override public CompletionStage<Boolean> validate(String[] credentials)
 	{
 		return userRepository.findByName(credentials[0])
 				.thenApplyAsync(user -> {
@@ -126,16 +127,6 @@ public class DefaultUserService implements UserService
 
 					String hashedPWToCheck = get_SHA_512_SecurePassword(passwordToCheck, salt);
 
-					Logger.info("user in database ---------------------------");
-					Logger.info("salt:-{}-", salt);
-					Logger.info("username:-{}-", username);
-					Logger.info("password:-{}-", password);
-
-					Logger.info("user to check ------------------------------");
-					Logger.info("salt:-{}-", salt);
-					Logger.info("username:-{}-", usernameToCheck);
-					Logger.info("hashedPassword:-{}-", hashedPWToCheck);
-
 					return (username.equals(usernameToCheck) &&
 							password.equals(hashedPWToCheck));
 				});
@@ -147,7 +138,7 @@ public class DefaultUserService implements UserService
 	 * @param username as a string
 	 * @return {@code true} if validation successful, otherwise {@code false}
 	 */
-	public CompletionStage<Boolean> check(String username)
+	@Override public CompletionStage<Boolean> check(String username)
 	{
 		return userRepository.findByName(username)
 				.thenApplyAsync(user -> {
@@ -165,7 +156,7 @@ public class DefaultUserService implements UserService
 	 * @param username as string
 	 * @return id of user
 	 */
-	public CompletionStage<Long> getIdByName(String username) {
+	@Override public CompletionStage<Long> getIdByName(String username) {
 		return  userRepository.findByName(username)
 				.thenApplyAsync(user -> {
 					if(user == null) {

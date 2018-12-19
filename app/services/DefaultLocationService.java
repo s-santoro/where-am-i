@@ -3,26 +3,23 @@ package services;
 import com.google.inject.Inject;
 import models.Location;
 import models.LocationRepository;
-import models.SessionRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
+/**
+ * Implementation of Location Service-interface.
+ */
 public class DefaultLocationService implements LocationService {
 
-    private final List<Location> locations;
     private final LocationRepository locationRepository;
 
     @Inject
     public DefaultLocationService(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
-        locations = new ArrayList<>();
     }
 
     /**
-     * Return's Stream of all Locations.
+     * Returns Stream of all Locations.
      *
      * @return Stream of all Locations nested in a CompletionStage
      */

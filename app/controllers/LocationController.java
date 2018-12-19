@@ -55,7 +55,7 @@ public class LocationController extends Controller
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> getLocation(
 			long id)
 	{
-		if (cc.checkCookie(request().cookie("logged-in")))
+		if (cc.checkCookie(request().cookie("uname")))
 		{
 			return locationService.get(id).thenApplyAsync(location -> {
 				if (location == null)
@@ -75,7 +75,7 @@ public class LocationController extends Controller
 
 	public CompletionStage<Result> createNewLocation()
 	{
-		if (cc.checkCookie(request().cookie("logged-in")))
+		if (cc.checkCookie(request().cookie("uname")))
 		{
 			final JsonNode json = Json.toJson(request().body().asJson());
 			if (json.isNull() || !validateLocation(json))

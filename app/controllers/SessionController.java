@@ -51,7 +51,7 @@ public class SessionController extends Controller {
     }
 
     public CompletionStage<Result> getSession(long id) {
-        if (cc.checkCookie(request().cookie("logged-in")))
+        if (cc.checkCookie(request().cookie("uname")))
         {
             return sessionService.get(id).thenApplyAsync(session -> {
                 if (session == null)
@@ -69,7 +69,7 @@ public class SessionController extends Controller {
     }
 
     public CompletionStage<Result> createNewSession() {
-        if (cc.checkCookie(request().cookie("logged-in")))
+        if (cc.checkCookie(request().cookie("uname")))
         {
             final JsonNode json = Json.toJson(request().body().asJson());
             if (json.isNull() || !validateSession(json))

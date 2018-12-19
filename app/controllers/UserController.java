@@ -10,6 +10,8 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.UserService;
+
+import java.util.Base64;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -94,7 +96,7 @@ public class UserController extends Controller
 
 	public CompletionStage<Result> getUser(long id)
 	{
-		if(cc.checkCookie(request().cookie("logged-in")))
+		if(cc.checkCookie(request().cookie("uname")))
 		{
 			return userService.get(id).thenApplyAsync(user -> {
 				if (user == null)
@@ -115,7 +117,7 @@ public class UserController extends Controller
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> deleteUser(
 			long id)
 	{
-		if (cc.checkCookie(request().cookie("logged-in"))) {
+		if (cc.checkCookie(request().cookie("uname"))) {
 			return userService.delete(id).thenApplyAsync(user -> {
 			if (user == null)
 			{
@@ -134,7 +136,7 @@ public class UserController extends Controller
 
 	@SuppressWarnings("Duplicates") public CompletionStage<Result> updateUser()
 	{
-		if (cc.checkCookie(request().cookie("logged-in")))
+		if (cc.checkCookie(request().cookie("uname")))
 		{
 
 			final JsonNode json = Json.toJson(request().body().asJson());
@@ -177,7 +179,9 @@ public class UserController extends Controller
 						.thenApplyAsync(aBoolean -> {
 							if (aBoolean)
 							{
-								Http.Cookie cookie = Http.Cookie.builder("logged-in", credentials[0]).build();
+								byte[] bytes = Base64.getEncoder().encode(credentials[0].getBytes());
+								String user = new String(bytes);
+								Http.Cookie cookie = Http.Cookie.builder("uname", user).build();
 								return ok(Json.toJson("Validation successful")).withCookies(cookie);
 							}
 							else
@@ -200,7 +204,7 @@ public class UserController extends Controller
 	 * @return Result ok() if logout was successful
 	 */
 	public CompletionStage<Result> userLogout() {
-		response().discardCookie("logged-in");
+		response().discardCookie("uname");
 		return CompletableFuture.supplyAsync(() -> ok());
 	}
 
@@ -212,7 +216,7 @@ public class UserController extends Controller
 	 */
 	public CompletionStage<Result> getIdByName(String username)
 	{
-		if (cc.checkCookie(request().cookie("logged-in")))
+		if (cc.checkCookie(request().cookie("uname")))
 		{
 			return userService.getIdByName(username)
 					.thenApplyAsync(id -> {

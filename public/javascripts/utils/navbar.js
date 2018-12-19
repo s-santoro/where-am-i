@@ -60,5 +60,6 @@ function resetNavbar() {
  * Read out cookie and returns username
  */
 function extractUser() {
-    return document.cookie.replace("logged-in=", "");
+    let user = document.cookie.replace("uname=", "");
+    return atob(user);
 }

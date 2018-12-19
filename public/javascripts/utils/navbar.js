@@ -1,6 +1,8 @@
 const navbarUser = $("#navbarUser");
 
-// detect any window-change and set navbar according to cookie correctly
+/**
+ * detect any window-change and set navbar according to cookie correctly
+ */
 function setNavbarAccordingCookie() {
     if(document.cookie.length === 0) {
         resetNavbar();
@@ -10,7 +12,9 @@ function setNavbarAccordingCookie() {
     }
 }
 
-
+/**
+ * Sets Usermenu to logged in with functionality
+ */
 function setUserMenu(username) {
     navbarUser.html(
         '<li class="nav-item dropdown">' +
@@ -27,6 +31,9 @@ function setUserMenu(username) {
     $("#logOut").on("click", logOut);
 }
 
+/**
+ * Log out User
+ */
 function logOut() {
     fetch('http://localhost:9000/api/users/logout')
     .then(response => {
@@ -38,6 +45,9 @@ function logOut() {
     }).catch(err => console.log(err));
 }
 
+/**
+ * Resets the navbar view
+ */
 function resetNavbar() {
     navbarUser.html(
         '<li class="nav-item">' +
@@ -46,6 +56,9 @@ function resetNavbar() {
     );
 }
 
+/**
+ * Read out cookie and returns username
+ */
 function extractUser() {
     return document.cookie.replace("logged-in=", "");
 }

@@ -1,11 +1,14 @@
-/*
-  javascript for user-rendering
+/**
+ * Javascript for rendering Userstatistics
  */
 
 function user(context) {
     createUserInfo(userID);
 }
 
+/**
+ * Fetches Data for Userstatistics
+ */
 function createUserInfo(userID){
     app.swap('');
     fetch('http://localhost:9000/api/users/' + userID)
@@ -31,10 +34,11 @@ function createUserInfo(userID){
         });
 }
 
-
+/**
+ * Calculates Average Score for Userstatistics
+ */
 function createAverageScore(dataInput, userID){
     let avg = calcAverageScore(dataInput, userID);
-    console.log(avg);
     let avgScore;
     if(avg>0){
         avgScore = '<h4 class="text-center mt-3 mb-3">Average Score: '+ avg +' km</h4>';

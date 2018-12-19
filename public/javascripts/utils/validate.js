@@ -12,12 +12,14 @@ passConfSignUp.on("change", validatePassConfSignUp);
 userLogIn.on("change", validateUserLogIn);
 passLogIn.on("change", validatePassLogIn);
 
+/**
+ * only accept alphanumeric signs starting with a letter
+ * all letters are lowercase
+ */
 function validateUserSignUp() {
-    // only accept alphanumeric signs starting with a letter
-    // all letters are lowercase
     let regex = /^\w+$/;
     let input = userSignUp.val().toLowerCase();
-    let invalidDiv = '<div id="invalidUSU" class="invalid-feedback">Only use alphanumeric sings</div>';
+    let invalidDiv = '<div id="invalidUSU" class="invalid-feedback">Only use alphanumeric signs</div>';
     let nameShortDiv = '<div id="shortUSU" class="invalid-feedback">Name is too short</div>';
     $('#invalidUSU').remove();
     $('#shortUSU').remove();
@@ -33,13 +35,15 @@ function validateUserSignUp() {
     return (input.length > 3 && regex.test(input));
 }
 
+/**
+ * only accept alphanumeric signs starting with a letter
+ * all letters are lowercase
+ */
 function validatePassSignUp() {
     validatePassConfSignUp();
-    // only accept alphanumeric signs starting with a letter
-    // all letters are lowercase
     let regex = /^\w+$/;
     let input = passSignUp.val().toLowerCase();
-    let invalidDiv = '<div id="invalidPSU" class="invalid-feedback">Only use alphanumeric sings</div>';
+    let invalidDiv = '<div id="invalidPSU" class="invalid-feedback">Only use alphanumeric signs</div>';
     let nameShortDiv = '<div id="shortPSU" class="invalid-feedback">Name is too short</div>';
     $('#invalidPSU').remove();
     $('#shortPSU').remove();
@@ -55,8 +59,10 @@ function validatePassSignUp() {
     return (input.length > 3 && regex.test(input));
 }
 
+/**
+ * compare both password-inputs
+ */
 function validatePassConfSignUp() {
-    // compare both password-inputs
     let input = passConfSignUp.val().toLowerCase();
     let inputPass = passSignUp.val().toLowerCase();
     let notEqualDiv = '<div id="notEqualPCSU" class="invalid-feedback">Password does not match</div>';
@@ -69,12 +75,14 @@ function validatePassConfSignUp() {
     return (input == inputPass);
 }
 
+/**
+ * only accept alphanumeric signs starting with a letter
+ * all letters are lowercase
+ */
 function validateUserLogIn() {
-    // only accept alphanumeric signs starting with a letter
-    // all letters are lowercase
     let regex = /^\w+$/;
     let input = userLogIn.val().toLowerCase();
-    let invalidDiv = '<div id="invalidULI" class="invalid-feedback">Only use alphanumeric sings</div>';
+    let invalidDiv = '<div id="invalidULI" class="invalid-feedback">Only use alphanumeric signs</div>';
     $('#invalidULI').remove();
     userLogIn.removeClass("is-invalid");
     if (input.length > 0 && !regex.test(input)) {
@@ -84,12 +92,14 @@ function validateUserLogIn() {
     return (regex.test(input));
 }
 
+/**
+ * only accept alphanumeric signs starting with a letter
+ * all letters are lowercase
+ */
 function validatePassLogIn() {
-// only accept alphanumeric signs starting with a letter
-    // all letters are lowercase
     let regex = /^\w+$/;
     let input = passLogIn.val().toLowerCase();
-    let invalidDiv = '<div id="invalidPLI" class="invalid-feedback">Only use alphanumeric sings</div>';
+    let invalidDiv = '<div id="invalidPLI" class="invalid-feedback">Only use alphanumeric signs</div>';
     $('#invalidPLI').remove();
     passLogIn.removeClass("is-invalid");
     if (input.length > 0 && !regex.test(input)) {

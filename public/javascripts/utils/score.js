@@ -1,3 +1,6 @@
+/**
+ * Shows Score after Game Session
+ */
 function showScore(input) {
     $('#evalButton').hide();
     $('#mapillaryContainer').hide();
@@ -9,6 +12,9 @@ function showScore(input) {
     createImageMarker(input);
 }
 
+/**
+ * Posts Session to Database
+ */
 function postSession(userID, imgKey, score){
     if(userID!=null){
         let session = {
@@ -28,6 +34,9 @@ function postSession(userID, imgKey, score){
     }
 }
 
+/**
+ * Creates IOS Date for posting Session to Database
+ */
 function createISODate(){
     let date = new Date();
     let year = date.getFullYear();
@@ -42,6 +51,9 @@ function createISODate(){
     return year+'-' + month + '-'+dt;
 }
 
+/**
+ * Calculates Average Score
+ */
 function calcAverageScore(dataInput, userID){
     let scoreArray = [];
     let sum = 0;
@@ -55,7 +67,6 @@ function calcAverageScore(dataInput, userID){
         sum += element;
     });
     avg = Math.round(sum/scoreArray.length);
-    console.log(avg);
     return avg;
 }
 

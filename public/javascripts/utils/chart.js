@@ -1,3 +1,6 @@
+/**
+ * Preprocesses fetched Sessions Data for Chart.js
+ */
 function preprocessData(dataInput, user) {
     let dataOutput = [];
     let label = [];
@@ -18,8 +21,10 @@ function preprocessData(dataInput, user) {
     return dataExport;
 }
 
+/**
+ * Creates Chart.js for Userstatistics with preprocessed Data from Sessions
+ */
 function createChart(dataInput){
-    console.log(dataInput);
     if(dataInput[1].length>0){
         let chartContainer = '<div class="container" id="chartContainer"></div>';
         let chartCanvas = '<canvas id="myChart" style="width: 100%; height: 300px;"></canvas>';

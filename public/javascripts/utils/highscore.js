@@ -1,7 +1,6 @@
-/*
-  javascript for highscore-rendering
+/**
+ * Javascript for showing the highscore-board
  */
-
 function highscore(context) {
     let table = '<table class="table table-striped">'+
                     '<thead>'+
@@ -19,6 +18,9 @@ function highscore(context) {
     generateTableContent();
 }
 
+/**
+ * Fetches Data for User and Session and postprocesses them to fill the table
+ */
 function generateTableContent() {
     //Create Array with Users
     let userArray = [];
@@ -49,7 +51,6 @@ function generateTableContent() {
                             }
                         });
                     });
-                    console.log(userArray);
                 return userArray;
                 })
                 .then(function(userArray){

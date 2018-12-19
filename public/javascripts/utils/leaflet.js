@@ -1,6 +1,9 @@
 let coordinates;
 let mymap;
 
+/**
+ * Creates Leaflet View for Game session
+ */
 function createLeaflet() {
   let leafletContainer = '<div class="container" id="leafletContainer"></div>';
   $('#app').append(leafletContainer);
@@ -35,6 +38,9 @@ function createLeaflet() {
   mymap.on('click', onMapClick);
 }
 
+/**
+ * creates Imagemarker to show actual position
+ */
 function createImageMarker(input) {
   let imgPopup = L.popup();
   imgPopup.setContent("Actual Position");

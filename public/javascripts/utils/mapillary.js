@@ -1,5 +1,8 @@
 let imgKey;
 let imgID;
+/**
+ * Creates Mapillary View for Game session
+ */
 function createMapillary() {
 //GET Image-Keys and take Random for initializing Mapillary
   fetch('http://localhost:9000/api/locations')

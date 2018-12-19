@@ -5,19 +5,19 @@ var app = $.sammy('#app', function() {
     this.get('#/game', function(context) {
         context.app.swap('');
         setNavbarAccordingCookie();
-        setUserID();
+        initiateUser();
         game(context);
     });
      this.get('#/user', function(context) {
          context.app.swap('');
          setNavbarAccordingCookie();
-         setUserID();
+         initiateUser();
          user(context);
      });
     this.get('#/highscore', function (context) {
         context.app.swap('');
         setNavbarAccordingCookie();
-        setUserID();
+        initiateUser();
         highscore(context);
     });
 });

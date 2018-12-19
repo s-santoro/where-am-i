@@ -4,6 +4,9 @@ const submit = $("#registerSubmit");
 // add event-listeners to elements
 submit.on("click", submitForm);
 
+/**
+ * Handles the Login and Registration Modal
+ */
 function submitForm() {
     let tabs = $(".tab-content").children();
     let activeTab = tabs.filter(index => tabs[index].classList.contains("active"));
@@ -29,7 +32,7 @@ function submitForm() {
                             // TODO: set cookie
                             $('#registerModal').modal('toggle');
                             setUserMenu(username);
-                            setUserID();
+                            initiateUser();
                             break;
                         case 403:
                             // Failed Authorization
@@ -93,6 +96,9 @@ function submitForm() {
     }
 }
 
+/**
+ * Resets Sign Up
+ */
 function emptySignUpInput() {
     userSignUp.val("");
     userSignUp.attr("placeholder", "Username");
@@ -102,6 +108,9 @@ function emptySignUpInput() {
     passConfSignUp.attr("placeholder", "Confirm Password");
 }
 
+/**
+ * Resets Login
+ */
 function emptyLogInput() {
     userLogIn.val("");
     userLogIn.attr("placeholder", "Username");
@@ -109,7 +118,10 @@ function emptyLogInput() {
     passLogIn.attr("placeholder", "Password");
 }
 
-function setUserID(){
+/**
+ * Initiates UserID and Clicked(variable for leaflet)
+ */
+function initiateUser(){
     clicked = false;
     let username = extractUser();
     fetch('http://localhost:9000/api/users/getId?username='+ username)

@@ -14,8 +14,8 @@ function submitForm() {
     switch (id) {
         case "logIn":
             if (validateUserLogIn() && validatePassLogIn()) {
-                let username = userLogIn.val();
-                let basic = "Basic " + username + ":" + passLogIn.val();
+                let username = userLogIn.val().toLowerCase();
+                let basic = "Basic " + username + ":" + passLogIn.val().toLowerCase();
                 fetch(url + '/api/users/login', {
                     method: "GET",
                     headers: {

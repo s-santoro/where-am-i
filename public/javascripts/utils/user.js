@@ -10,6 +10,7 @@ function user(context) {
  * Fetches Data for Userstatistics
  */
 function createUserInfo(userID){
+    console.log(userID);
     app.swap('');
     fetch('http://localhost:9000/api/users/' + userID)
         .then(function(response) {
@@ -27,9 +28,9 @@ function createUserInfo(userID){
             return response.json();
         })
         .then(function(myJson) {
-            //Average Score
+            //Calculate Average Score
             createAverageScore(myJson, userID);
-            //Chart
+            //Chart.js
             createChart(preprocessData(myJson, userID));
         });
 }

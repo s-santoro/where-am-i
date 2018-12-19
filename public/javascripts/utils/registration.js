@@ -29,7 +29,6 @@ function submitForm() {
                     switch (status) {
                         case 200:
                             // Successful Authorization
-                            // TODO: set cookie
                             $('#registerModal').modal('toggle');
                             setUserMenu(username);
                             initiateUser();

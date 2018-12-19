@@ -14,6 +14,8 @@ import static play.test.Helpers.route;
 
 public class HomeControllerTest extends WithApplication {
 
+    private final String uri = "https://quiet-shelf-61716.herokuapp.com/";
+
     @Override
     protected Application provideApplication() {
         return new GuiceApplicationBuilder().build();
@@ -23,7 +25,7 @@ public class HomeControllerTest extends WithApplication {
     public void testIndex() {
         Http.RequestBuilder request = new Http.RequestBuilder()
                 .method(GET)
-                .uri("/");
+                .uri(uri);
 
         Result result = route(app, request);
         assertEquals(OK, result.status());

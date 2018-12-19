@@ -1,0 +1,2 @@
+web: target/universal/stage/bin/whereami -Dhttp.port=${PORT} -
+Dplay.evolutions.db.default.autoApply=true

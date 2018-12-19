@@ -16,7 +16,7 @@ function submitForm() {
             if (validateUserLogIn() && validatePassLogIn()) {
                 let username = userLogIn.val();
                 let basic = "Basic " + username + ":" + passLogIn.val();
-                fetch('http://localhost:9000/api/users/login', {
+                fetch(url + '/api/users/login', {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json; charset=utf-8",

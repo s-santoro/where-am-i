@@ -16,7 +16,7 @@ libraryDependencies ++= Seq(
   evolutions,
   javaJdbc,
   javaJpa,
-  "org.postgresql" % "postgresql" % "42.2.5",
+  "org.postgresql" % "postgresql" % "42.2.2",
   "org.hibernate" % "hibernate-entitymanager" % "5.3.7.Final"
 )
 
@@ -29,10 +29,6 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "leaflet" % "1.3.4",
   "org.webjars" % "chartjs" % "26962ce-1"
 )
-
-// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
-libraryDependencies += "io.jsonwebtoken" % "jjwt" % "0.9.0"
-
 
 PlayKeys.externalizeResources := false
 

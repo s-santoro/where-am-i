@@ -1,4 +1,4 @@
-const url = 'http://localhost:9000'
+const url = 'https://quiet-shelf-61716.herokuapp.com';
 /**
  * Defines new Sammy application, binds it to #app, sets new route and replaces Content from element app with ''
  */

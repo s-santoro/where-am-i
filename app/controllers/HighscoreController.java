@@ -127,13 +127,8 @@ public class HighscoreController extends Controller {
 				String highscoreList = tableBeginning;
 				for (int x = 0; x < highscoreEntries.size(); x++) {
 					HighscoreEntry e = highscoreEntries.get(x);
-					String[] list = new String[4];
 					int count = x+1;
-					list[0] = count+"";
-					list[1] = e.getUser();
-					list[2] = e.getNumberOfGames()+"";
-					list[3] = e.getAverageScore()+"";
-					String entry = "<tr><th scope='row'>" + x + 1 +
+					String entry = "<tr><th scope='row'>" + count +
 							"</th><td>" + e.getUser() +
 							"</td><td>" + e.getNumberOfGames() +
 							"</td><td>" + e.getAverageScore() +

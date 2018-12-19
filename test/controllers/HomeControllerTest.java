@@ -14,7 +14,7 @@ import static play.test.Helpers.route;
 
 public class HomeControllerTest extends WithApplication {
 
-    private final String uri = "https://quiet-shelf-61716.herokuapp.com/";
+    private final String uri = "https://where-am-i-located.herokuapp.com/";
 
     @Override
     protected Application provideApplication() {

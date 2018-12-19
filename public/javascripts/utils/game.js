@@ -29,7 +29,7 @@ function game(context) {
         .then((distance) => {
           clicked=true;
           showScore(distance);
-          postSession(userID, imgKey, distance.distance); //Todo: Implement USER
+          postSession(userID, imgKey, distance.distance);
         });
     }else{
       $('#controlPanel').append("<h4 id='noTipError' class='ml-4'>Please set your tip!</h4>");

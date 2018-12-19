@@ -16,7 +16,7 @@ import static play.test.Helpers.*;
 
 public class LocationControllerTest extends WithApplication {
 
-	private final String uri = "https://quiet-shelf-61716.herokuapp.com/api/locations";
+	private final String uri = "https://where-am-i-located.herokuapp.com/api/locations";
 
 	@Override
 	protected Application provideApplication() {

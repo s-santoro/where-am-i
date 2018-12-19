@@ -119,12 +119,15 @@ function emptyLogInput() {
  */
 function initiateUser(){
     clicked = false;
-    let username = extractUser();
-    fetch(url + '/api/users/getId?username='+ username)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(myJson) {
-            userID = myJson;
-        });
+    if (document.cookie.length !== 0) {
+        let username = extractUser();
+        fetch(url + '/api/users/getId?username='+ username)
+            .then(function(response) {
+             return response.json();
+            })
+            .then(function(myJson) {
+             userID = myJson;
+            })
+            .catch();
+    }
 }

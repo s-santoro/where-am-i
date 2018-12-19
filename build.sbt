@@ -41,4 +41,4 @@ libraryDependencies += "org.awaitility" % "awaitility" % "2.0.0" % Test
 testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))
 
 // heroku route
-herokuAppName in Compile := "quiet-shelf-61716"
+herokuAppName in Compile := "where-am-i-located"

@@ -12,7 +12,7 @@ function user(context) {
 function createUserInfo(userID){
     console.log(userID);
     app.swap('');
-    fetch('http://localhost:9000/api/users/' + userID)
+    fetch(url + '/api/users/' + userID)
         .then(function(response) {
             return response.json();
         })
@@ -23,7 +23,7 @@ function createUserInfo(userID){
             $('#app').prepend(user);
         });
     //Average Score and Chart
-    fetch('http://localhost:9000/api/sessions')
+    fetch(url + '/api/sessions')
         .then(function(response) {
             return response.json();
         })

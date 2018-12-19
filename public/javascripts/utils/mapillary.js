@@ -5,7 +5,7 @@ let imgID;
  */
 function createMapillary() {
 //GET Image-Keys and take Random for initializing Mapillary
-  fetch('http://localhost:9000/api/locations')
+  fetch(url + '/api/locations')
     .then(function(response) {
       return response.json();
     })

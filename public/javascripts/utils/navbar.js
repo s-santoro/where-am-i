@@ -35,7 +35,7 @@ function setUserMenu(username) {
  * Log out User
  */
 function logOut() {
-    fetch('http://localhost:9000/api/users/logout')
+    fetch(url + '/api/users/logout')
     .then(response => {
         emptyLogInput();
         return response.status

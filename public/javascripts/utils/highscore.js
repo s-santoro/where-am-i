@@ -24,7 +24,7 @@ function highscore(context) {
 function generateTableContent() {
     //Create Array with Users
     let userArray = [];
-    fetch('http://localhost:9000/api/users')
+    fetch(url + '/api/users')
         .then(function(response) {
             return response.json();
         })
@@ -37,7 +37,7 @@ function generateTableContent() {
         })
         .then(function(userArray){
             //Get Session Information to fill Array
-            fetch('http://localhost:9000/api/sessions')
+            fetch(url + '/api/sessions')
                 .then(function(response) {
                     return response.json();
                 })

@@ -59,7 +59,7 @@ function submitForm() {
                     "password": passSignUp.val().toLowerCase(),
                     "avatar": "1"
                 };
-                fetch('http://localhost:9000/api/users', {
+                fetch(url + '/api/users', {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json; charset=utf-8",
@@ -124,7 +124,7 @@ function emptyLogInput() {
 function initiateUser(){
     clicked = false;
     let username = extractUser();
-    fetch('http://localhost:9000/api/users/getId?username='+ username)
+    fetch(url + '/api/users/getId?username='+ username)
         .then(function(response) {
             return response.json();
         })

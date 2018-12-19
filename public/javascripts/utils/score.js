@@ -23,7 +23,7 @@ function postSession(userID, imgKey, score){
             "score": Math.round(score),
             "timestamp": createISODate()
         }
-        fetch('http://localhost:9000/api/sessions',{
+        fetch(url + '/api/sessions',{
             method: 'post',
             headers: {
                 'Accept': 'application/json',

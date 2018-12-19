@@ -128,7 +128,8 @@ public class HighscoreController extends Controller {
 				for (int x = 0; x < highscoreEntries.size(); x++) {
 					HighscoreEntry e = highscoreEntries.get(x);
 					String[] list = new String[4];
-					list[0] = x+1+"";
+					int count = x+1;
+					list[0] = count+"";
 					list[1] = e.getUser();
 					list[2] = e.getNumberOfGames()+"";
 					list[3] = e.getAverageScore()+"";

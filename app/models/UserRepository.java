@@ -1,12 +1,10 @@
 package models;
 
 import com.google.inject.Inject;
-import play.Logger;
 import play.db.jpa.JPAApi;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Stream;

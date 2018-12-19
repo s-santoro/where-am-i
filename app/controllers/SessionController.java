@@ -40,6 +40,8 @@ public class SessionController extends Controller {
 
     @SuppressWarnings("Duplicates")
     public CompletionStage<Result> getSessions(String query) {
+        if (cc.checkCookie(request().cookie("uname")))
+        {
             return sessionService.get(query).thenApplyAsync(sessionStream -> {
                 if (sessionStream == null)
                 {
@@ -48,6 +50,11 @@ public class SessionController extends Controller {
                 }
                 return ok(Json.toJson(sessionStream.collect(Collectors.toList())));
             }, ec.current());
+        }
+        else
+        {
+            return CompletableFuture.supplyAsync(() -> forbidden());
+        }
     }
 
     public CompletionStage<Result> getSession(long id) {

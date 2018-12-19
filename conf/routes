@@ -8,25 +8,27 @@ GET     /                           controllers.HomeController.index
 # Routes WhereAmI
 #
 # Routes for User
-GET     /api/users              controllers.UserController.getUsers
+#GET     /api/users              controllers.UserController.getUsers
 POST    /api/users              controllers.UserController.createNewUser
-PUT     /api/users              controllers.UserController.updateUser
+#PUT     /api/users              controllers.UserController.updateUser
 GET     /api/users/login        controllers.UserController.userLogin
 GET     /api/users/logout       controllers.UserController.userLogout
 GET     /api/users/getId        controllers.UserController.getIdByName(username: String)
 GET     /api/users/:id          controllers.UserController.getUser(id: Long)
-DELETE  /api/users/:id          controllers.UserController.deleteUser(id: Long)
+#DELETE  /api/users/:id          controllers.UserController.deleteUser(id: Long)
 
 #Routes for Session
 GET     /api/sessions           controllers.SessionController.getSessions(q: String ?= null)
-GET     /api/sessions/:id       controllers.SessionController.getSession(id: Long)
+#GET     /api/sessions/:id       controllers.SessionController.getSession(id: Long)
 POST    /api/sessions           controllers.SessionController.createNewSession
 
 #Routes for Location
-GET     /api/locations           controllers.LocationController.getLocations
-GET     /api/locations/:id       controllers.LocationController.getLocation(id: Long)
-POST    /api/locations           controllers.LocationController.createNewLocation
+GET     /api/locations          controllers.LocationController.getLocations
+#GET     /api/locations/:id      controllers.LocationController.getLocation(id: Long)
+#POST    /api/locations          controllers.LocationController.createNewLocation
 
+#Routes for Highscore
+GET     /api/highscore          controllers.HighscoreController.getHighscoreList
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
